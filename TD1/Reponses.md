@@ -50,3 +50,18 @@
 1. ✅
 2. ✅
 3. ✅
+
+## Exercice 11
+1. ✅
+2. ✅
+3. ✅
+
+## Exercice 12
+1. ✅
+2. ✅
+3. ✅
+4. - **Comment sont transmises les informations ?**
+     <br>   ➯ Ici, les informations sont transmises par requête _GET_ via le protocole HTTP (les données sont donc visibles directement depuis l'URL de la requête)
+- **Comment s’appelle la partie de l’URL contenant les informations ?**
+  <br>   ➯ Chaîne de requête _(query string)_
+5. ✅

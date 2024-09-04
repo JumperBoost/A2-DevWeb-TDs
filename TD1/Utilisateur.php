@@ -1,42 +1,42 @@
 <?php
 class Utilisateur {
 
-    private $login;
-    private $nom;
-    private $prenom;
+    private string $login;
+    private string $nom;
+    private string $prenom;
 
     // un getter
-    public function getNom() {
+    public function getNom(): string {
         return $this->nom;
     }
 
     // un setter
-    public function setNom($nom) {
+    public function setNom(string $nom): void {
         $this->nom = $nom;
     }
 
-    public function getLogin() {
+    public function getLogin(): string {
         return $this->login;
     }
 
-    public function setLogin($login) {
+    public function setLogin(string $login): void {
         $this->login = substr($login, 0, 64);
     }
 
-    public function getPrenom() {
+    public function getPrenom(): string {
         return $this->prenom;
     }
 
-    public function setPrenom($prenom) {
+    public function setPrenom($prenom): void {
         $this->prenom = $prenom;
     }
 
 
     // un constructeur
     public function __construct(
-        $login,
-        $nom,
-        $prenom,
+        string $login,
+        string $nom,
+        string $prenom,
     ) {
         $this->login = $login;
         $this->nom = $nom;
@@ -44,7 +44,7 @@ class Utilisateur {
     }
 
     // Pour pouvoir convertir un objet en chaîne de caractères
-    public function __toString() {
+    public function __toString(): string {
         return "Utilisateur $this->nom $this->prenom de login $this->login";
     }
 }

@@ -9,7 +9,7 @@
 
 <body>
     <?php
-        $utilisateur1 = new Utilisateur("rigauxh", "Rigaux", "Héloïse");
+        $utilisateur1 = new Utilisateur("Héloïse", "Rigaux", "Héloïse");
         echo $utilisateur1;
     ?>
 </body>

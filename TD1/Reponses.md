@@ -7,12 +7,12 @@
 1. ✅
 2. - **Que fait le gestionnaire de fichier quand on double-clique ?**
      <br>   ➯ Il ouvre la page html dans le navigateur
-- **Que signifie le _file_ au début de l’URL ?**
-  <br>   ➯ _file_ signifie le protocole de fichier (i.e. permet d'accéder au fichier souhaité)
-- **Est-ce que la page HTML s’affiche correctement ?**
-  <br>   ➯ Oui
-- **Est-ce qu’il y a une communication entre un serveur et un client HTTP ?**
-  <br>   ➯ Non, puisqu'on ne passe pas par un serveur web (i.e. par le protocole HTTP)
+   - **Que signifie le _file_ au début de l’URL ?**
+     <br>   ➯ _file_ signifie le protocole de fichier (i.e. permet d'accéder au fichier souhaité)
+   - **Est-ce que la page HTML s’affiche correctement ?**
+     <br>   ➯ Oui
+   - **Est-ce qu’il y a une communication entre un serveur et un client HTTP ?**
+     <br>   ➯ Non, puisqu'on ne passe pas par un serveur web (i.e. par le protocole HTTP)
 3. - **Est-ce qu’il y a une communication entre un serveur et un client HTTP maintenant ?**
   <br>   ➯ Oui, puisqu'on passe par le serveur web _Apache_ du container Docker (i.e. par le protocole HTTP)
 
@@ -62,6 +62,11 @@
 3. ✅
 4. - **Comment sont transmises les informations ?**
      <br>   ➯ Ici, les informations sont transmises par requête _GET_ via le protocole HTTP (les données sont donc visibles directement depuis l'URL de la requête)
-- **Comment s’appelle la partie de l’URL contenant les informations ?**
-  <br>   ➯ Chaîne de requête _(query string)_
+   - **Comment s’appelle la partie de l’URL contenant les informations ?**
+     <br>   ➯ Chaîne de requête _(query string)_
 5. ✅
+
+## Exercice 13
+1. ✅
+2. ✅
+3. ✅

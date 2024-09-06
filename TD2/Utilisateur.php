@@ -1,4 +1,6 @@
 <?php
+require_once 'ConnexionBaseDeDonnees.php';
+
 class Utilisateur {
 
     private string $login;
@@ -31,7 +33,6 @@ class Utilisateur {
         $this->prenom = $prenom;
     }
 
-
     // un constructeur
     public function __construct(
         string $login,
@@ -46,6 +47,21 @@ class Utilisateur {
     // Pour pouvoir convertir un objet en chaîne de caractères
     public function __toString(): string {
         return "Utilisateur $this->nom $this->prenom de login $this->login";
+    }
+
+    public static function construireDepuisTableauSQL(array $utilisateurFormatTableau): Utilisateur {
+        return new Utilisateur($utilisateurFormatTableau['login'], $utilisateurFormatTableau['nom'], $utilisateurFormatTableau['prenom']);
+    }
+
+    public static function getUtilisateurs(): array {
+        $pdo = ConnexionBaseDeDonnees::getPdo();
+        $pdoStatement = $pdo->query("SELECT * FROM utilisateur", PDO::FETCH_ASSOC);
+
+        $utilisateurs = [];
+        foreach ($pdoStatement as $ligne) {
+            $utilisateurs[] = self::construireDepuisTableauSQL($ligne);
+        }
+        return $utilisateurs;
     }
 }
 ?>

@@ -7,6 +7,6 @@ require_once "ConnexionBaseDeDonnees.php";
 // SQLSTATE[HY000] [1045] Access denied for user ... (mauvais mot de passe)
 // ou
 // SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed (mauvais nom d'hôte)
-$model = new ConnexionBaseDeDonnees();
-echo $model->getPdo()->getAttribute(PDO::ATTR_CONNECTION_STATUS);
+$model = ConnexionBaseDeDonnees::class;
+echo $model::getPdo()->getAttribute(PDO::ATTR_CONNECTION_STATUS);
 ?>

@@ -9,4 +9,3 @@ require_once "ConnexionBaseDeDonnees.php";
 // SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed (mauvais nom d'hôte)
 $model = ConnexionBaseDeDonnees::class;
 echo $model::getPdo()->getAttribute(PDO::ATTR_CONNECTION_STATUS);
-?>

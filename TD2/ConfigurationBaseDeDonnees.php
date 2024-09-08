@@ -45,4 +45,3 @@ class ConfigurationBaseDeDonnees {
         return ConfigurationBaseDeDonnees::$configurationBaseDeDonnees['motDePasse'];
     }
 }
-?>

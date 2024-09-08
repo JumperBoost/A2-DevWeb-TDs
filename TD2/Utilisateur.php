@@ -64,4 +64,3 @@ class Utilisateur {
         return $utilisateurs;
     }
 }
-?>

@@ -53,7 +53,7 @@ class Utilisateur {
         return new Utilisateur($utilisateurFormatTableau['login'], $utilisateurFormatTableau['nom'], $utilisateurFormatTableau['prenom']);
     }
 
-    public static function getUtilisateurs(): array {
+    public static function recupererUtilisateurs(): array {
         $pdo = ConnexionBaseDeDonnees::getPdo();
         $pdoStatement = $pdo->query("SELECT * FROM utilisateur", PDO::FETCH_ASSOC);
 

@@ -1,7 +1,7 @@
 <?php
 require_once 'Utilisateur.php';
 
-$utilisateurs = Utilisateur::getUtilisateurs();
+$utilisateurs = Utilisateur::recupererUtilisateurs();
 foreach ($utilisateurs as $utilisateur) {
     echo "<p>$utilisateur</p>";
 }

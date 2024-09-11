@@ -1,7 +1,7 @@
 <?php
 require_once 'Utilisateur.php';
 
-$utilisateurParLogin = Utilisateur::recupererUtilisateurParLogin("renjaudj");
+$utilisateurParLogin = Utilisateur::recupererUtilisateurParLogin("dupontp");
 echo $utilisateurParLogin;
 
 if($utilisateurParLogin == null)

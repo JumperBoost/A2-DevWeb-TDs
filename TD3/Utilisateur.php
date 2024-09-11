@@ -83,4 +83,16 @@ class Utilisateur {
             return Utilisateur::construireDepuisTableauSQL($utilisateurFormatTableau);
         else return null;
     }
+
+    public function ajouter(): void {
+        $sql = "INSERT INTO utilisateur VALUES (:loginTag, :nomTag, :prenomTag)";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = [
+            'loginTag' => $this->login,
+            'nomTag' => $this->nom,
+            'prenomTag' => $this->prenom
+        ];
+        $pdoStatement->execute($values);
+    }
 }

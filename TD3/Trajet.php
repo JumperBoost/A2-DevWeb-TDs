@@ -33,17 +33,17 @@ class Trajet {
 
     public static function construireDepuisTableauSQL(array $trajetTableau) : Trajet {
         return new Trajet(
-            $trajetTableau["id"],
+            $trajetTableau["id"] ?? null,
             $trajetTableau["depart"],
             $trajetTableau["arrivee"],
             new DateTime($trajetTableau["date"]),
             $trajetTableau["prix"],
             Utilisateur::recupererUtilisateurParLogin($trajetTableau["conducteurLogin"]),
-            $trajetTableau["nonFumeur"]
+            $trajetTableau["nonFumeur"] ?? false
         );
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -133,5 +133,23 @@ class Trajet {
         }
 
         return $trajets;
+    }
+
+    public function ajouter(): void {
+        $sql = "INSERT INTO trajet (depart, arrivee, date, prix, conducteurLogin, nonFumeur) VALUES (:departTag, :arriveeTag, :dateTag, :prixTag, :conducteurLoginTag, :nonFumeurTag)";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = [
+            'departTag' => $this->depart,
+            'arriveeTag' => $this->arrivee,
+            'dateTag' => $this->date->format("Y-m-d"),
+            'prixTag' => $this->prix,
+            'conducteurLoginTag' => $this->conducteur->getLogin(),
+            'nonFumeurTag' => intval($this->nonFumeur)
+        ];
+        $pdoStatement->execute($values);
+
+        // Récupérer l'identifiant du trajet
+        $this->id = ConnexionBaseDeDonnees::getPdo()->lastInsertId();
     }
 }

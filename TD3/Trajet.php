@@ -12,6 +12,11 @@ class Trajet {
     private Utilisateur $conducteur;
     private bool $nonFumeur;
 
+    /**
+     * @var Utilisateur[]
+     */
+    private array $passagers;
+
     public function __construct(
         ?int $id,
         string $depart,
@@ -19,7 +24,8 @@ class Trajet {
         DateTime $date,
         int $prix,
         Utilisateur $conducteur,
-        bool $nonFumeur
+        bool $nonFumeur,
+        array $passagers = []
     )
     {
         $this->id = $id;
@@ -29,18 +35,25 @@ class Trajet {
         $this->prix = $prix;
         $this->conducteur = $conducteur;
         $this->nonFumeur = $nonFumeur;
+        $this->passagers = $passagers;
     }
 
     public static function construireDepuisTableauSQL(array $trajetTableau) : Trajet {
-        return new Trajet(
+        $trajet = new Trajet(
             $trajetTableau["id"] ?? null,
             $trajetTableau["depart"],
             $trajetTableau["arrivee"],
             new DateTime($trajetTableau["date"]),
             $trajetTableau["prix"],
             Utilisateur::recupererUtilisateurParLogin($trajetTableau["conducteurLogin"]),
-            $trajetTableau["nonFumeur"] ?? false
+            $trajetTableau["nonFumeur"] ?? false,
         );
+
+        // Récupérer la liste des passagers si le trajet existe déjà
+        if(!is_null($trajet->getId())) {
+            $trajet->setPassagers($trajet->recupererPassagers());
+        }
+        return $trajet;
     }
 
     public function getId(): ?int
@@ -113,6 +126,16 @@ class Trajet {
         $this->nonFumeur = $nonFumeur;
     }
 
+    public function getPassagers(): array
+    {
+        return $this->passagers;
+    }
+
+    public function setPassagers(array $passagers): void
+    {
+        $this->passagers = $passagers;
+    }
+
     public function __toString()
     {
         $nonFumeur = $this->nonFumeur ? " non fumeur" : " ";
@@ -125,7 +148,7 @@ class Trajet {
      * @return Trajet[]
      */
     public static function recupererTrajets() : array {
-        $pdoStatement = ConnexionBaseDeDonnees::getPDO()->query("SELECT * FROM trajet");
+        $pdoStatement = ConnexionBaseDeDonnees::getPDO()->query("SELECT * FROM trajet", PDO::FETCH_ASSOC);
 
         $trajets = [];
         foreach($pdoStatement as $trajetFormatTableau) {
@@ -133,6 +156,20 @@ class Trajet {
         }
 
         return $trajets;
+    }
+
+    /**
+     * @return Utilisateur[]
+     */
+    private function recupererPassagers() : array {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare("SELECT * FROM passager JOIN utilisateur ON passagerLogin = login WHERE trajetId = :trajetIdTag");
+        $pdoStatement->execute(['trajetIdTag' => $this->id]);
+
+        $utilisateurs = [];
+        foreach ($pdoStatement as $passager) {
+            $utilisateurs[] = Utilisateur::construireDepuisTableauSQL($passager);
+        }
+        return $utilisateurs;
     }
 
     public function ajouter(): void {

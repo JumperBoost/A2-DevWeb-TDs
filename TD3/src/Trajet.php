@@ -158,6 +158,14 @@ class Trajet {
         return $trajets;
     }
 
+    public static function recupererTrajetParId(int $id): ?Trajet {
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare("SELECT * FROM trajet WHERE id = :trajetIdTag");
+        $pdoStatement->execute(['trajetIdTag' => $id]);
+
+        $trajet = Trajet::construireDepuisTableauSQL($pdoStatement->fetch(PDO::FETCH_ASSOC));
+        return !$trajet ? null : $trajet;
+    }
+
     /**
      * @return Utilisateur[]
      */
@@ -188,5 +196,17 @@ class Trajet {
 
         // Récupérer l'identifiant du trajet
         $this->id = ConnexionBaseDeDonnees::getPdo()->lastInsertId();
+    }
+
+    public function supprimerPassager(string $passagerLogin): bool {
+        $sql = "DELETE FROM passager WHERE trajetId = :trajetIdTag AND passagerLogin = :loginTag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = [
+            'trajetIdTag' => $this->id,
+            'loginTag' => $passagerLogin
+        ];
+        $pdoStatement->execute($values);
+        return true;
     }
 }

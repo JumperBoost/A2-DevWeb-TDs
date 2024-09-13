@@ -207,6 +207,6 @@ class Trajet {
             'loginTag' => $passagerLogin
         ];
         $pdoStatement->execute($values);
-        return true;
+        return $pdoStatement->rowCount() == 1;
     }
 }

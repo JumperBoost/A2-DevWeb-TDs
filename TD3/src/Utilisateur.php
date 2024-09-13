@@ -106,7 +106,7 @@ class Utilisateur {
         else return null;
     }
 
-    public function ajouter(): void {
+    public function ajouter(): bool {
         $sql = "INSERT INTO utilisateur VALUES (:loginTag, :nomTag, :prenomTag)";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
@@ -115,7 +115,12 @@ class Utilisateur {
             'nomTag' => $this->nom,
             'prenomTag' => $this->prenom
         ];
-        $pdoStatement->execute($values);
+        try {
+            $pdoStatement->execute($values);
+        } catch (PDOException) {
+            return false;
+        }
+        return true;
     }
 
     /**

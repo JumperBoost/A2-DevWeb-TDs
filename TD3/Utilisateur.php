@@ -1,11 +1,17 @@
 <?php
 require_once 'ConnexionBaseDeDonnees.php';
+require_once 'Trajet.php';
 
 class Utilisateur {
 
     private string $login;
     private string $nom;
     private string $prenom;
+
+    /**
+     * @var Trajet[]|null
+     */
+    private ?array $trajetsCommePassager;
 
     // un getter
     public function getNom(): string {
@@ -33,6 +39,18 @@ class Utilisateur {
         $this->prenom = $prenom;
     }
 
+    public function getTrajetsCommePassager(): ?array
+    {
+        if(is_null($this->trajetsCommePassager))
+            $this->setTrajetsCommePassager($this->recupererTrajetsCommePassager());
+        return $this->trajetsCommePassager;
+    }
+
+    public function setTrajetsCommePassager(?array $trajetsCommePassager): void
+    {
+        $this->trajetsCommePassager = $trajetsCommePassager;
+    }
+
     // un constructeur
     public function __construct(
         string $login,
@@ -42,6 +60,7 @@ class Utilisateur {
         $this->login = $login;
         $this->nom = $nom;
         $this->prenom = $prenom;
+        $this->trajetsCommePassager = null;
     }
 
     // Pour pouvoir convertir un objet en chaîne de caractères
@@ -53,6 +72,9 @@ class Utilisateur {
         return new Utilisateur($utilisateurFormatTableau['login'], $utilisateurFormatTableau['nom'], $utilisateurFormatTableau['prenom']);
     }
 
+    /**
+     * @return Utilisateur[]
+     */
     public static function recupererUtilisateurs(): array {
         $pdo = ConnexionBaseDeDonnees::getPdo();
         $pdoStatement = $pdo->query("SELECT * FROM utilisateur", PDO::FETCH_ASSOC);
@@ -94,5 +116,22 @@ class Utilisateur {
             'prenomTag' => $this->prenom
         ];
         $pdoStatement->execute($values);
+    }
+
+    /**
+     * @return Trajet[]
+     */
+    private function recupererTrajetsCommePassager() : array {
+        $sql = "SELECT * FROM passager JOIN trajet ON trajetId = id WHERE passagerLogin = :loginTag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = ['loginTag' => $this->login];
+        $pdoStatement->execute($values);
+
+        $trajets = [];
+        foreach ($pdoStatement as $trajet) {
+            $trajets[] = Trajet::construireDepuisTableauSQL($trajet);
+        }
+        return $trajets;
     }
 }

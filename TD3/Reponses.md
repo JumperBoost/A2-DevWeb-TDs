@@ -44,3 +44,15 @@
 ## Exercice 9
 1. ✅
 2. ✅
+
+## Exercice 10
+1. ✅
+2. ✅
+3. ```sql
+    [..]=''; DELETE FROM utilisateur2; -- '
+    ```
+
+## Exercice 11
+1. ✅
+2. ✅
+3. ✅

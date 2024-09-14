@@ -56,6 +56,10 @@ class Trajet {
         return $trajet;
     }
 
+    public static function isTableauSQLComplet(array $trajetTableau): bool {
+        return isset($trajetTableau["id"], $trajetTableau["depart"], $trajetTableau["arrivee"], $trajetTableau["date"], $trajetTableau["prix"], $trajetTableau["conducteurLogin"]);
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -139,9 +143,7 @@ class Trajet {
     public function __toString()
     {
         $nonFumeur = $this->nonFumeur ? " non fumeur" : " ";
-        return "<p>
-            Le trajet$nonFumeur du {$this->date->format("d/m/Y")} partira de {$this->depart} pour aller à {$this->arrivee} (conducteur: {$this->conducteur->getPrenom()} {$this->conducteur->getNom()}).
-        </p>";
+        return "Le trajet$nonFumeur du {$this->date->format("d/m/Y")} partira de {$this->depart} pour aller à {$this->arrivee} (conducteur: {$this->conducteur->getPrenom()} {$this->conducteur->getNom()}).";
     }
 
     /**
@@ -162,8 +164,8 @@ class Trajet {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare("SELECT * FROM trajet WHERE id = :trajetIdTag");
         $pdoStatement->execute(['trajetIdTag' => $id]);
 
-        $trajet = Trajet::construireDepuisTableauSQL($pdoStatement->fetch(PDO::FETCH_ASSOC));
-        return !$trajet ? null : $trajet;
+        $trajet = $pdoStatement->rowCount() == 1 ? Trajet::construireDepuisTableauSQL($pdoStatement->fetch(PDO::FETCH_ASSOC)) : null;
+        return  $trajet;
     }
 
     /**
@@ -196,6 +198,22 @@ class Trajet {
 
         // Récupérer l'identifiant du trajet
         $this->id = ConnexionBaseDeDonnees::getPdo()->lastInsertId();
+    }
+
+    public function mettreAJour(): bool {
+        $sql = "UPDATE trajet SET depart = :departTag, arrivee = :arriveeTag, date = :dateTag, prix = :prixTag, conducteurLogin = :conducteurLoginTag, nonFumeur = :nonFumeurTag WHERE id = :idTag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = [
+            'departTag' => $this->depart,
+            'arriveeTag' => $this->arrivee,
+            'dateTag' => $this->date->format("Y-m-d"),
+            'prixTag' => $this->prix,
+            'conducteurLoginTag' => $this->conducteur->getLogin(),
+            'nonFumeurTag' => intval($this->nonFumeur),
+            'idTag' => $this->id
+        ];
+        return $pdoStatement->execute($values);
     }
 
     public function supprimerPassager(string $passagerLogin): bool {

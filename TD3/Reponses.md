@@ -67,3 +67,7 @@
 1. ✅
 2. ✅
 3. ✅
+
+## Idées complémentaires
+1. ✅
+2. ✅

@@ -3,7 +3,7 @@ require_once 'Trajet.php';
 
 $trajets = Trajet::recupererTrajets();
 foreach ($trajets as $trajet) {
-    echo "<h1>$trajet</h1>";
+    echo "<h1>$trajet <i><a href='mettreAJourTrajet.php?trajet_id={$trajet->getId()}'>Modifier</a></i></h1>";
     echo "<h3>Passagers</h3><ul>";
     $passagers = $trajet->getPassagers();
     foreach ($passagers as $passager) {

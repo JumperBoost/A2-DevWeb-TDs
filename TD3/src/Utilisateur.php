@@ -13,6 +13,11 @@ class Utilisateur {
      */
     private ?array $trajetsCommePassager;
 
+    /**
+     * @var Trajet[]|null
+     */
+    private ?array $trajetsCommeConducteur;
+
     // un getter
     public function getNom(): string {
         return $this->nom;
@@ -51,6 +56,18 @@ class Utilisateur {
         $this->trajetsCommePassager = $trajetsCommePassager;
     }
 
+    public function getTrajetsCommeConducteur(): ?array
+    {
+        if(is_null($this->trajetsCommeConducteur))
+            $this->setTrajetsCommeConducteur($this->recupererTrajetsCommeConducteur());
+        return $this->trajetsCommeConducteur;
+    }
+
+    public function setTrajetsCommeConducteur(?array $trajetsCommeConducteur): void
+    {
+        $this->trajetsCommeConducteur = $trajetsCommeConducteur;
+    }
+
     // un constructeur
     public function __construct(
         string $login,
@@ -61,6 +78,7 @@ class Utilisateur {
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->trajetsCommePassager = null;
+        $this->trajetsCommeConducteur = null;
     }
 
     // Pour pouvoir convertir un objet en chaîne de caractères
@@ -128,6 +146,23 @@ class Utilisateur {
      */
     private function recupererTrajetsCommePassager() : array {
         $sql = "SELECT * FROM passager JOIN trajet ON trajetId = id WHERE passagerLogin = :loginTag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = ['loginTag' => $this->login];
+        $pdoStatement->execute($values);
+
+        $trajets = [];
+        foreach ($pdoStatement as $trajet) {
+            $trajets[] = Trajet::construireDepuisTableauSQL($trajet);
+        }
+        return $trajets;
+    }
+
+    /**
+     * @return Trajet[]
+     */
+    private function recupererTrajetsCommeConducteur() : array {
+        $sql = "SELECT * FROM trajet WHERE conducteurLogin = :loginTag";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
 
         $values = ['loginTag' => $this->login];

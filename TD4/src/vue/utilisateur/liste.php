@@ -11,6 +11,8 @@
      */
     foreach ($utilisateurs as $utilisateur)
         echo '<p> Utilisateur de login ' . $utilisateur->getLogin() . '. <i><a href="?action=afficherDetail&login=' . $utilisateur->getLogin() . '">Détails</a></i></p>';
+
+    echo "<i><a href='?action=afficherFormulaireCreation'>Créer un utilisateur</a></i>";
     ?>
 </body>
 </html>

@@ -20,3 +20,8 @@
 1. ✅
 2. ✅
 3. `routeur.php` exécute `ControleurUtilisateur.php::afficherListe()`, puis est exécuté dans l'ordre cité dans l'exercice précédent.
+
+## Exercice 5
+1. ✅
+2. ✅
+3. Le code n'est plus vraiment similaire à l'ancien fichier `lireUtilisateur.php` puisqu'on peut exécuter n'importe quelle méthode statique du contrôleur en le précisant dans la requête.

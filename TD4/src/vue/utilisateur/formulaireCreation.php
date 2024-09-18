@@ -24,6 +24,8 @@
         <p>
             <input type="submit" value="Envoyer" />
         </p>
+
+        <input type='hidden' name='action' value='creerDepuisFormulaire'>
     </fieldset>
 </form>
 </body>

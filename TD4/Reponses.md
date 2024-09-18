@@ -34,3 +34,6 @@
 
 ## Exercice 8
 ✅
+
+## Exercice 9
+✅

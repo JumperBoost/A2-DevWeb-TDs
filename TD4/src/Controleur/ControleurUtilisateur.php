@@ -19,6 +19,13 @@ class ControleurUtilisateur {
         self::afficherVue("formulaireCreation.php");
     }
 
+    public static function creerDepuisFormulaire() : void {
+        $utilisateur = ModeleUtilisateur::construireDepuisTableauSQL($_GET);
+        if($utilisateur->ajouter())
+            self::afficherListe();
+        else self::afficherVue("erreur.php");
+    }
+
     private static function afficherVue(string $cheminVue, array $parametres = []) : void {
         extract($parametres);
         require "../vue/utilisateur/$cheminVue";

@@ -1,5 +1,9 @@
 <?php
-require_once __DIR__ . '/ConnexionBaseDeDonnees.php';
+namespace App\Covoiturage\Modele;
+
+use App\Covoiturage\Modele\ConnexionBaseDeDonnees;
+use PDO;
+use PDOException;
 
 class ModeleUtilisateur
 {

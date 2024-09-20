@@ -1,6 +1,8 @@
 <?php
-require_once __DIR__ . "/../Configuration/ConfigurationBaseDeDonnees.php";
+namespace App\Covoiturage\Modele;
+
 use App\Covoiturage\Configuration\ConfigurationBaseDeDonnees;
+use PDO;
 
 class ConnexionBaseDeDonnees
 {

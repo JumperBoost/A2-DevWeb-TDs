@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . '/../Modele/ModeleUtilisateur.php'; // chargement du modèle
+namespace App\Covoiturage\Controleur;
+
+use App\Covoiturage\Modele\ModeleUtilisateur;
+
 class ControleurUtilisateur {
     // Déclaration de type de retour void : la fonction ne retourne pas de valeur
     public static function afficherListe() : void {

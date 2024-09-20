@@ -8,11 +8,18 @@
          */
         echo $titre; ?>
     </title>
+    <link rel="stylesheet" href="../ressources/css/navstyle.css">
 </head>
 <body>
 <header>
     <nav>
-        <!-- Votre menu de navigation ici -->
+        <ul>
+            <li>
+                <a href="?action=afficherListe&controleur=utilisateur">Gestion des utilisateurs</a>
+            </li><li>
+                <a href="?action=afficherListe&controleur=trajet">Gestion des trajets</a>
+            </li>
+        </ul>
     </nav>
 </header>
 <main>
@@ -24,6 +31,9 @@
     ?>
 </main>
 <footer>
+    <p>
+        Site de covoiturage à trois roues.
+    </p>
 </footer>
 </body>
 </html>

@@ -25,7 +25,7 @@ class ControleurUtilisateur {
     public static function creerDepuisFormulaire() : void {
         $utilisateur = ModeleUtilisateur::construireDepuisTableauSQL($_GET);
         if($utilisateur->ajouter())
-            self::afficherListe();
+            self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
         else self::afficherErreur();
     }
 

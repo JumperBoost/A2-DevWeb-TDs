@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="utf-8" />
-    <title> Formulaire Utilisateur </title>
-</head>
-
-<body>
 <form method="GET" action="">
     <fieldset>
         <legend>Mon formulaire :</legend>
@@ -28,5 +20,3 @@
         <input type='hidden' name='action' value='creerDepuisFormulaire'>
     </fieldset>
 </form>
-</body>
-</html>

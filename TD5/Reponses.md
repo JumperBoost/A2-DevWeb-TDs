@@ -14,3 +14,6 @@
 
 ## Exercice 5
 ✅
+
+## Exercice 7
+✅

@@ -9,7 +9,7 @@
     /**
      * @var ModeleUtilisateur $utilisateur
      */
-    echo "Utilisateur {$utilisateur->getNom()} {$utilisateur->getPrenom()} de login {$utilisateur->getLogin()}";
+    echo "Utilisateur " . htmlspecialchars($utilisateur->getNom()) . " " . htmlspecialchars($utilisateur->getPrenom()) . " de login " . htmlspecialchars($utilisateur->getLogin());
     ?>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../Configuration/ConfigurationBaseDeDonnees.php";
+use App\Covoiturage\Configuration\ConfigurationBaseDeDonnees;
 
 class ConnexionBaseDeDonnees
 {

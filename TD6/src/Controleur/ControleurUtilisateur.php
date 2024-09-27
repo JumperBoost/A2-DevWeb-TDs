@@ -26,7 +26,14 @@ class ControleurUtilisateur {
         $utilisateur = UtilisateurRepository::construireDepuisTableauSQL($_GET);
         if(UtilisateurRepository::ajouter($utilisateur))
             self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
-        else self::afficherErreur("Impossible d'ajouter un nouvel utilisateur.");
+        else self::afficherErreur("Impossible d'ajouter l'utilisateur.");
+    }
+
+    public static function supprimer() : void {
+        $login = $_GET["login"];
+        if(UtilisateurRepository::supprimerParLogin($login))
+            self::afficherVue("utilisateurSupprime.php", ["titre" => "Liste des utilisateurs"]);
+        else self::afficherErreur("Impossible de supprimer l'utilisateur.");
     }
 
     public static function afficherErreur(string $messageErreur = "") : void {

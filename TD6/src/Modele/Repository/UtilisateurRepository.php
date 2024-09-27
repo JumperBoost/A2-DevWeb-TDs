@@ -65,4 +65,19 @@ class UtilisateurRepository
         }
         return true;
     }
+
+    public static function supprimerParLogin(string $login): bool {
+        $sql = "DELETE FROM utilisateur WHERE login = :loginTag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = [
+            'loginTag' => $login
+        ];
+        try {
+            $pdoStatement->execute($values);
+        } catch (PDOException) {
+            return false;
+        }
+        return true;
+    }
 }

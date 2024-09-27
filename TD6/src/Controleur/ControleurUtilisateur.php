@@ -1,6 +1,7 @@
 <?php
 namespace App\Covoiturage\Controleur;
 
+use App\Covoiturage\Modele\DataObject\Utilisateur;
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
 class ControleurUtilisateur {
@@ -34,6 +35,20 @@ class ControleurUtilisateur {
         if(UtilisateurRepository::supprimerParLogin($login))
             self::afficherVue("utilisateurSupprime.php", ["titre" => "Liste des utilisateurs", "login" => $login]);
         else self::afficherErreur("Impossible de supprimer l'utilisateur.");
+    }
+
+    public static function mettreAJour() : void {
+        $utilisateur = new Utilisateur($_GET['login'], $_GET['nom'], $_GET['prenom']);
+        UtilisateurRepository::mettreAJour($utilisateur);
+        self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
+    }
+
+    public static function afficherFormulaireMiseAJour() : void {
+        $login = $_GET["login"];
+        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($login);
+        if(!is_null($utilisateur)) {
+            self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour utilisateur", "utilisateur" => $utilisateur]);
+        } else self::afficherErreur("L'utilisateur inséré n'existe pas.");
     }
 
     public static function afficherErreur(string $messageErreur = "") : void {

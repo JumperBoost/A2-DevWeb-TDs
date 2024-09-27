@@ -32,7 +32,7 @@ class ControleurUtilisateur {
     public static function supprimer() : void {
         $login = $_GET["login"];
         if(UtilisateurRepository::supprimerParLogin($login))
-            self::afficherVue("utilisateurSupprime.php", ["titre" => "Liste des utilisateurs"]);
+            self::afficherVue("utilisateurSupprime.php", ["titre" => "Liste des utilisateurs", "login" => $login]);
         else self::afficherErreur("Impossible de supprimer l'utilisateur.");
     }
 

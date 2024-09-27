@@ -1,18 +1,18 @@
 <?php
 namespace App\Covoiturage\Controleur;
 
-use App\Covoiturage\Modele\ModeleUtilisateur;
+use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
 class ControleurUtilisateur {
     // Déclaration de type de retour void : la fonction ne retourne pas de valeur
     public static function afficherListe() : void {
-        $utilisateurs = ModeleUtilisateur::recupererUtilisateurs(); //appel au modèle pour gérer la BD
+        $utilisateurs = UtilisateurRepository::recupererUtilisateurs(); //appel au modèle pour gérer la BD
         self::afficherVue("liste.php", ["titre" => "Liste des utilisateurs", 'utilisateurs' => $utilisateurs]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail() : void {
         $login = $_GET["login"];
-        $utilisateur = ModeleUtilisateur::recupererUtilisateurParLogin($login);
+        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($login);
         if(!is_null($utilisateur))
             self::afficherVue("detail.php", ["titre" => "Détail d'un utilisateur", 'utilisateur' => $utilisateur]);
         else self::afficherErreur("L'utilisateur n'existe pas.");
@@ -23,8 +23,8 @@ class ControleurUtilisateur {
     }
 
     public static function creerDepuisFormulaire() : void {
-        $utilisateur = ModeleUtilisateur::construireDepuisTableauSQL($_GET);
-        if($utilisateur->ajouter())
+        $utilisateur = UtilisateurRepository::construireDepuisTableauSQL($_GET);
+        if(UtilisateurRepository::ajouter($utilisateur))
             self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
         else self::afficherErreur("Impossible d'ajouter un nouvel utilisateur.");
     }

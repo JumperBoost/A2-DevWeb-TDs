@@ -1,5 +1,5 @@
 <?php
-namespace App\Covoiturage\Modele;
+namespace App\Covoiturage\Modele\Repository;
 
 use App\Covoiturage\Configuration\ConfigurationBaseDeDonnees;
 use PDO;

@@ -1,6 +1,6 @@
 <p>L'utilisateur a bien été créé !</p>
 <?php
-use App\Covoiturage\Modele\ModeleUtilisateur;
+use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
-$utilisateurs = ModeleUtilisateur::recupererUtilisateurs();
+$utilisateurs = UtilisateurRepository::recupererUtilisateurs();
 require 'liste.php';

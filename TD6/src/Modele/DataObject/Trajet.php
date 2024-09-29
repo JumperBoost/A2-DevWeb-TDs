@@ -4,7 +4,7 @@ namespace App\Covoiturage\Modele\DataObject;
 
 use DateTime;
 
-class Trajet {
+class Trajet extends AbstractDataObject {
     private ?int $id;
     private string $depart;
     private string $arrivee;

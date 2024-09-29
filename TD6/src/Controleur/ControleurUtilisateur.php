@@ -7,7 +7,7 @@ use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 class ControleurUtilisateur {
     // Déclaration de type de retour void : la fonction ne retourne pas de valeur
     public static function afficherListe() : void {
-        $utilisateurs = UtilisateurRepository::recupererUtilisateurs(); //appel au modèle pour gérer la BD
+        $utilisateurs = (new UtilisateurRepository())->recuperer(); //appel au modèle pour gérer la BD
         self::afficherVue("liste.php", ["titre" => "Liste des utilisateurs", 'utilisateurs' => $utilisateurs]);  //"redirige" vers la vue
     }
 
@@ -24,7 +24,7 @@ class ControleurUtilisateur {
     }
 
     public static function creerDepuisFormulaire() : void {
-        $utilisateur = UtilisateurRepository::construireDepuisTableauSQL($_GET);
+        $utilisateur = (new UtilisateurRepository())->construireDepuisTableauSQL($_GET);
         if(UtilisateurRepository::ajouter($utilisateur))
             self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
         else self::afficherErreur("Impossible d'ajouter l'utilisateur.");

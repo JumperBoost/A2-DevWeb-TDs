@@ -23,3 +23,12 @@
 
 ## Exercice 8
 ✅
+
+## Exercice 9
+✅
+
+## Exercice 10
+✅
+
+## Exercice 11
+✅

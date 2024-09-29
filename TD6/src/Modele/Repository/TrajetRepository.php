@@ -6,16 +6,16 @@ use App\Covoiturage\Modele\DataObject\Utilisateur;
 use DateTime;
 use PDO;
 
-class TrajetRepository {
-    public static function construireDepuisTableauSQL(array $trajetTableau): Trajet {
+class TrajetRepository extends AbstractRepository {
+    public function construireDepuisTableauSQL(array $objetFormatTableau): Trajet {
         $trajet = new Trajet(
-            $trajetTableau["id"] ?? null,
-            $trajetTableau["depart"],
-            $trajetTableau["arrivee"],
-            new DateTime($trajetTableau["date"]),
-            $trajetTableau["prix"],
-            UtilisateurRepository::recupererUtilisateurParLogin($trajetTableau["conducteurLogin"]),
-            $trajetTableau["nonFumeur"] ?? false,
+            $objetFormatTableau["id"] ?? null,
+            $objetFormatTableau["depart"],
+            $objetFormatTableau["arrivee"],
+            new DateTime($objetFormatTableau["date"]),
+            $objetFormatTableau["prix"],
+            UtilisateurRepository::recupererUtilisateurParLogin($objetFormatTableau["conducteurLogin"]),
+            $objetFormatTableau["nonFumeur"] ?? false,
         );
 
         // Récupérer la liste des passagers si le trajet existe déjà
@@ -23,20 +23,6 @@ class TrajetRepository {
             $trajet->setPassagers(self::recupererPassagers($trajet));
         }
         return $trajet;
-    }
-
-    /**
-     * @return Trajet[]
-     */
-    public static function recupererTrajets(): array {
-        $pdoStatement = ConnexionBaseDeDonnees::getPDO()->query("SELECT * FROM trajet", PDO::FETCH_ASSOC);
-
-        $trajets = [];
-        foreach($pdoStatement as $trajetFormatTableau) {
-            $trajets[] = TrajetRepository::construireDepuisTableauSQL($trajetFormatTableau);
-        }
-
-        return $trajets;
     }
 
     /**
@@ -48,8 +34,12 @@ class TrajetRepository {
 
         $utilisateurs = [];
         foreach($pdoStatement as $passager) {
-            $utilisateurs[] = UtilisateurRepository::construireDepuisTableauSQL($passager);
+            $utilisateurs[] = (new UtilisateurRepository)->construireDepuisTableauSQL($passager);
         }
         return $utilisateurs;
+    }
+
+    protected function getNomTable(): string {
+        return "trajet";
     }
 }

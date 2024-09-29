@@ -5,7 +5,7 @@ use App\Covoiturage\Modele\Repository\TrajetRepository;
 
 class ControleurTrajet {
     public static function afficherListe() : void {
-        $trajets = TrajetRepository::recupererTrajets();
+        $trajets = (new TrajetRepository())->recuperer();
         self::afficherVue("liste.php", ["titre" => "Liste des trajets", 'trajets' => $trajets]);
     }
 

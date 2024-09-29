@@ -4,7 +4,7 @@ namespace App\Covoiturage\Modele\DataObject;
 
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
-class Utilisateur {
+class Utilisateur extends AbstractDataObject {
     private string $login;
     private string $nom;
     private string $prenom;

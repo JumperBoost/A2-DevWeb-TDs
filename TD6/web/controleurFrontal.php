@@ -10,9 +10,16 @@ $chargeurDeClasse->addNamespace('App\Covoiturage', __DIR__ . '/../src');
 // Définir un paramètre par défaut
 if(!isset($_GET["action"]))
     $_GET["action"] = "afficherListe";
-$action = $_GET["action"];
+if(!isset($_GET["controleur"]))
+    $_GET["controleur"] = "utilisateur";
 
-$methodes = get_class_methods("App\\Covoiturage\\Controleur\\ControleurUtilisateur");
-if(in_array($action, $methodes))
-    ControleurUtilisateur::$action();
-else ControleurUtilisateur::afficherErreur("La méthode $action n'existe pas.");
+$action = $_GET["action"];
+$controleur = $_GET["controleur"];
+
+$nomDeClasseControleur = "App\\Covoiturage\\Controleur\\Controleur" . ucfirst($controleur);
+if(class_exists($nomDeClasseControleur)) {
+    $methodes = get_class_methods($nomDeClasseControleur);
+    if (in_array($action, $methodes))
+        ControleurUtilisateur::$action();
+    else ControleurUtilisateur::afficherErreur("La méthode $action n'existe pas.");
+} else ControleurUtilisateur::afficherErreur("La classe " . ucfirst($controleur) . " n'existe pas.");

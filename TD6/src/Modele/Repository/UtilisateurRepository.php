@@ -1,6 +1,7 @@
 <?php
 namespace App\Covoiturage\Modele\Repository;
 
+use App\Covoiturage\Modele\DataObject\Trajet;
 use App\Covoiturage\Modele\DataObject\Utilisateur;
 use PDO;
 use PDOException;
@@ -91,5 +92,39 @@ class UtilisateurRepository
             'prenomTag' => $utilisateur->getPrenom()
         ];
         $pdoStatement->execute($values);
+    }
+
+    /**
+     * @return Trajet[]
+     */
+    public static function recupererTrajetsCommePassager(Utilisateur $utilisateur) : array {
+        $sql = "SELECT * FROM passager JOIN trajet ON trajetId = id WHERE passagerLogin = :loginTag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = ['loginTag' => $utilisateur->getLogin()];
+        $pdoStatement->execute($values);
+
+        $trajets = [];
+        foreach ($pdoStatement as $trajet) {
+            $trajets[] = TrajetRepository::construireDepuisTableauSQL($trajet);
+        }
+        return $trajets;
+    }
+
+    /**
+     * @return Trajet[]
+     */
+    public static function recupererTrajetsCommeConducteur(Utilisateur $utilisateur) : array {
+        $sql = "SELECT * FROM trajet WHERE conducteurLogin = :loginTag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $values = ['loginTag' => $utilisateur->getLogin()];
+        $pdoStatement->execute($values);
+
+        $trajets = [];
+        foreach ($pdoStatement as $trajet) {
+            $trajets[] = TrajetRepository::construireDepuisTableauSQL($trajet);
+        }
+        return $trajets;
     }
 }

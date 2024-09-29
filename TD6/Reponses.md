@@ -20,3 +20,6 @@
 
 ## Exercice 7
 ✅
+
+## Exercice 8
+✅

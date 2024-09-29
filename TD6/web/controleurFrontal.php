@@ -20,6 +20,6 @@ $nomDeClasseControleur = "App\\Covoiturage\\Controleur\\Controleur" . ucfirst($c
 if(class_exists($nomDeClasseControleur)) {
     $methodes = get_class_methods($nomDeClasseControleur);
     if (in_array($action, $methodes))
-        ControleurUtilisateur::$action();
-    else ControleurUtilisateur::afficherErreur("La méthode $action n'existe pas.");
-} else ControleurUtilisateur::afficherErreur("La classe " . ucfirst($controleur) . " n'existe pas.");
+        $nomDeClasseControleur::$action();
+    else $nomDeClasseControleur::afficherErreur("La méthode $action n'existe pas.");
+} else ControleurUtilisateur::afficherErreur("La classe " . ucfirst($controleur) . " n'existe pas."); // ControleurUtilisateur est temporairement utilisé pour afficher une erreur

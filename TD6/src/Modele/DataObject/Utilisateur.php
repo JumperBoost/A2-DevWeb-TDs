@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Covoiturage\Modele\DataObject;
 
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;

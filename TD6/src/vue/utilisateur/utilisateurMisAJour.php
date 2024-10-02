@@ -4,7 +4,7 @@ use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 /**
  * @var string $login
  */
-echo "<p>L’utilisateur de login $login a bien été mis à jour</p>";
+echo "<p>L’utilisateur de login " . htmlspecialchars($login) . " a bien été mis à jour</p>";
 
-$utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+$utilisateurs = (new UtilisateurRepository())->recuperer();
 require 'liste.php';

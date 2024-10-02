@@ -32,3 +32,12 @@
 
 ## Exercice 11
 ✅
+
+## Exercice 12
+✅
+
+## Exercice 13
+✅
+
+## Exercice 14
+✅

@@ -14,7 +14,7 @@ class TrajetRepository extends AbstractRepository {
             $objetFormatTableau["arrivee"],
             new DateTime($objetFormatTableau["date"]),
             $objetFormatTableau["prix"],
-            UtilisateurRepository::recupererUtilisateurParLogin($objetFormatTableau["conducteurLogin"]),
+            (new UtilisateurRepository())->recupererParClePrimaire($objetFormatTableau["conducteurLogin"]),
             $objetFormatTableau["nonFumeur"] ?? false,
         );
 
@@ -41,5 +41,9 @@ class TrajetRepository extends AbstractRepository {
 
     protected function getNomTable(): string {
         return "trajet";
+    }
+
+    protected function getClePrimaire(): string {
+        return "id";
     }
 }

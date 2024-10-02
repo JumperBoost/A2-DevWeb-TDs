@@ -2,5 +2,5 @@
 <?php
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
-$utilisateurs = UtilisateurRepository::recupererUtilisateurs();
+$utilisateurs = (new UtilisateurRepository())->recuperer();
 require 'liste.php';

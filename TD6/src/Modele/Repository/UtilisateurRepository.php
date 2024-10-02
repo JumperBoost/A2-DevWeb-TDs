@@ -11,26 +11,6 @@ class UtilisateurRepository extends AbstractRepository {
         return new Utilisateur($objetFormatTableau['login'], $objetFormatTableau['nom'], $objetFormatTableau['prenom']);
     }
 
-    public static function recupererUtilisateurParLogin(string $login): ?Utilisateur {
-        $sql = "SELECT * FROM utilisateur WHERE login = :loginTag";
-        // Préparation de la requête
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = array(
-            "loginTag" => $login
-        );
-        // On donne les valeurs et on exécute la requête
-        $pdoStatement->execute($values);
-
-        // On récupère les résultats comme précédemment
-        // Note: fetch() renvoie false si pas d'utilisateur correspondant
-        $utilisateurFormatTableau = $pdoStatement->fetch();
-
-        if($utilisateurFormatTableau)
-            return (new UtilisateurRepository)->construireDepuisTableauSQL($utilisateurFormatTableau);
-        else return null;
-    }
-
     public static function ajouter(Utilisateur $utilisateur): bool {
         $sql = "INSERT INTO utilisateur VALUES (:loginTag, :nomTag, :prenomTag)";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
@@ -39,21 +19,6 @@ class UtilisateurRepository extends AbstractRepository {
             'loginTag' => $utilisateur->getLogin(),
             'nomTag' => $utilisateur->getNom(),
             'prenomTag' => $utilisateur->getPrenom()
-        ];
-        try {
-            $pdoStatement->execute($values);
-        } catch (PDOException) {
-            return false;
-        }
-        return true;
-    }
-
-    public static function supprimerParLogin(string $login): bool {
-        $sql = "DELETE FROM utilisateur WHERE login = :loginTag";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = [
-            'loginTag' => $login
         ];
         try {
             $pdoStatement->execute($values);
@@ -111,5 +76,9 @@ class UtilisateurRepository extends AbstractRepository {
 
     protected function getNomTable(): string {
         return "utilisateur";
+    }
+
+    protected function getClePrimaire(): string {
+        return "login";
     }
 }

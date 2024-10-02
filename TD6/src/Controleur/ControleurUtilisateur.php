@@ -13,7 +13,7 @@ class ControleurUtilisateur {
 
     public static function afficherDetail() : void {
         $login = $_GET["login"];
-        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($login);
+        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
         if(!is_null($utilisateur))
             self::afficherVue("detail.php", ["titre" => "Détail d'un utilisateur", 'utilisateur' => $utilisateur]);
         else self::afficherErreur("L'utilisateur n'existe pas.");
@@ -32,7 +32,7 @@ class ControleurUtilisateur {
 
     public static function supprimer() : void {
         $login = $_GET["login"];
-        if(UtilisateurRepository::supprimerParLogin($login))
+        if((new UtilisateurRepository())->supprimer($login))
             self::afficherVue("utilisateurSupprime.php", ["titre" => "Liste des utilisateurs", "login" => $login]);
         else self::afficherErreur("Impossible de supprimer l'utilisateur.");
     }
@@ -45,7 +45,7 @@ class ControleurUtilisateur {
 
     public static function afficherFormulaireMiseAJour() : void {
         $login = $_GET["login"];
-        $utilisateur = UtilisateurRepository::recupererUtilisateurParLogin($login);
+        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
         if(!is_null($utilisateur)) {
             self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour utilisateur", "utilisateur" => $utilisateur]);
         } else self::afficherErreur("L'utilisateur inséré n'existe pas.");

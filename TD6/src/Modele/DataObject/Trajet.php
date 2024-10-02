@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Covoiturage\Modele\DataObject;
 
 use DateTime;

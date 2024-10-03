@@ -1,31 +1,13 @@
 <?php
 namespace App\Covoiturage\Modele\Repository;
 
+use App\Covoiturage\Modele\DataObject\AbstractDataObject;
 use App\Covoiturage\Modele\DataObject\Trajet;
 use App\Covoiturage\Modele\DataObject\Utilisateur;
-use PDO;
-use PDOException;
 
 class UtilisateurRepository extends AbstractRepository {
     public function construireDepuisTableauSQL(array $objetFormatTableau): Utilisateur {
         return new Utilisateur($objetFormatTableau['login'], $objetFormatTableau['nom'], $objetFormatTableau['prenom']);
-    }
-
-    public static function ajouter(Utilisateur $utilisateur): bool {
-        $sql = "INSERT INTO utilisateur VALUES (:loginTag, :nomTag, :prenomTag)";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = [
-            'loginTag' => $utilisateur->getLogin(),
-            'nomTag' => $utilisateur->getNom(),
-            'prenomTag' => $utilisateur->getPrenom()
-        ];
-        try {
-            $pdoStatement->execute($values);
-        } catch (PDOException) {
-            return false;
-        }
-        return true;
     }
 
     public static function mettreAJour(Utilisateur $utilisateur): void {
@@ -80,5 +62,22 @@ class UtilisateurRepository extends AbstractRepository {
 
     protected function getClePrimaire(): string {
         return "login";
+    }
+
+    protected function getNomsColonnes(): array {
+        return ["login", "nom", "prenom"];
+    }
+
+    /**
+     * @param Utilisateur $utilisateur
+     * @return array
+     */
+    protected function formatTableauSQL(AbstractDataObject $utilisateur): array
+    {
+        return array(
+            "loginTag" => $utilisateur->getLogin(),
+            "nomTag" => $utilisateur->getNom(),
+            "prenomTag" => $utilisateur->getPrenom(),
+        );
     }
 }

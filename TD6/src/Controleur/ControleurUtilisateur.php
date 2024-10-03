@@ -25,7 +25,7 @@ class ControleurUtilisateur {
 
     public static function creerDepuisFormulaire() : void {
         $utilisateur = (new UtilisateurRepository())->construireDepuisTableauSQL($_GET);
-        if(UtilisateurRepository::ajouter($utilisateur))
+        if((new UtilisateurRepository())->ajouter($utilisateur))
             self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
         else self::afficherErreur("Impossible d'ajouter l'utilisateur.");
     }

@@ -41,3 +41,12 @@
 
 ## Exercice 14
 ✅
+
+## Exercice 15
+✅
+
+## Exercice 16
+✅
+
+## Exercice 17
+✅

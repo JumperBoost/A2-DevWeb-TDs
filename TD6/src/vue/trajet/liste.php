@@ -8,4 +8,4 @@ foreach ($trajets as $trajet)
         '<a '/*href="?controleur=trajet&action=afficherFormulaireMiseAJour&id=' . $trajet->getId()*/ . '">Mettre à jour</a> ' .
         '<a href="?controleur=trajet&action=supprimer&id=' . rawurlencode($trajet->getId()) . '">Supprimer</a></i></p>';
 
-echo "<i><a "/*href='?controleur=trajet&action=afficherFormulaireCreation'*/ . ">Créer un trajet</a></i>";
+echo "<i><a href='?controleur=trajet&action=afficherFormulaireCreation'>Créer un trajet</a></i>";

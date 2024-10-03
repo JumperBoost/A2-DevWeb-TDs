@@ -10,7 +10,12 @@ abstract class AbstractRepository {
 
     protected abstract function getClePrimaire(): string;
 
+    /** @return string[] */
+    protected abstract function getNomsColonnes(): array;
+
     protected abstract function construireDepuisTableauSQL(array $objetFormatTableau) : AbstractDataObject;
+
+    protected abstract function formatTableauSQL(AbstractDataObject $objet): array;
 
     /**
      * @return AbstractDataObject[]
@@ -47,6 +52,22 @@ abstract class AbstractRepository {
         if($objetFormatTableau)
             return $this->construireDepuisTableauSQL($objetFormatTableau);
         else return null;
+    }
+
+    public function ajouter(AbstractDataObject $objet): bool {
+        $formatTableauSqlTag = array_keys($this->formatTableauSQL($objet));
+        for($i = 0; $i < count($formatTableauSqlTag); $i++)
+            $formatTableauSqlTag[$i] = ":" . $formatTableauSqlTag[$i];
+
+        $sql = "INSERT INTO {$this->getNomTable()} (" . join(",", $this->getNomsColonnes()) . ") VALUES (" . join(",", $formatTableauSqlTag) . ")";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        try {
+            $pdoStatement->execute($this->formatTableauSQL($objet));
+        } catch (PDOException) {
+            return false;
+        }
+        return true;
     }
 
     public function supprimer(string $valeurClePrimaire): bool {

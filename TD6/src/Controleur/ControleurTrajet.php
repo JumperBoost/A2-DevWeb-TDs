@@ -17,6 +17,10 @@ class ControleurTrajet {
         else self::afficherErreur("Le trajet n'existe pas.");
     }
 
+    public static function afficherFormulaireCreation(): void {
+        self::afficherVue("formulaireCreation.php", ["titre" => "Formulaire trajet"]);
+    }
+
     public static function supprimer(): void {
         $id = $_GET["id"];
         if((new TrajetRepository())->supprimer($id))

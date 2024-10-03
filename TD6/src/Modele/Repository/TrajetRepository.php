@@ -1,10 +1,10 @@
 <?php
 namespace App\Covoiturage\Modele\Repository;
 
+use App\Covoiturage\Modele\DataObject\AbstractDataObject;
 use App\Covoiturage\Modele\DataObject\Trajet;
 use App\Covoiturage\Modele\DataObject\Utilisateur;
 use DateTime;
-use PDO;
 
 class TrajetRepository extends AbstractRepository {
     public function construireDepuisTableauSQL(array $objetFormatTableau): Trajet {
@@ -45,5 +45,25 @@ class TrajetRepository extends AbstractRepository {
 
     protected function getClePrimaire(): string {
         return "id";
+    }
+
+    protected function getNomsColonnes(): array {
+        return ["id", "depart", "arrivee", "date", "prix", "conducteurLogin", "nonFumeur"];
+    }
+
+    /**
+     * @param Trajet $trajet
+     * @return array
+     */
+    protected function formatTableauSQL(AbstractDataObject $trajet): array {
+        return array(
+            "idTag" => $trajet->getId(),
+            "departTag" => $trajet->getDepart(),
+            "arriveeTag" => $trajet->getArrivee(),
+            "dateTag" => $trajet->getDate()->format("y-M-D"),
+            "prixTag" => $trajet->getPrix(),
+            "conducteurLoginTag" => $trajet->getConducteur()->getLogin(),
+            "nonFumeurTag" => $trajet->isNonFumeur()
+        );
     }
 }

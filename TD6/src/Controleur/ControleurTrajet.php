@@ -18,7 +18,7 @@ class ControleurTrajet {
     }
 
     public static function afficherFormulaireCreation(): void {
-        self::afficherVue("formulaireCreation.php", ["titre" => "Formulaire trajet"]);
+        self::afficherVue("formulaireCreation.php", ["titre" => "Formulaire création trajet"]);
     }
 
     public static function creerDepuisFormulaire(): void {
@@ -26,6 +26,13 @@ class ControleurTrajet {
         if((new TrajetRepository())->ajouter($trajet))
             self::afficherVue("trajetCree.php", ["titre" => "Liste des trajets"]);
         else self::afficherErreur("Impossible d'ajouter le trajet.");
+    }
+
+    public static function afficherFormulaireMiseAJour(): void {
+        $trajet = (new TrajetRepository())->recupererParClePrimaire($_GET["id"]);
+        if(!is_null($trajet))
+            self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour trajet", "trajet" => $trajet]);
+        else self::afficherErreur("Impossible de récupérer le trajet.");
     }
 
     public static function supprimer(): void {

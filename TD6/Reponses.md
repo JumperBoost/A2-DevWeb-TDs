@@ -53,3 +53,9 @@
 
 ## Exercice 18
 ✅
+
+## Exercice 19
+✅
+
+## Exercice 20
+✅

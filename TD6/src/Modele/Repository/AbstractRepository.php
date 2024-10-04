@@ -70,6 +70,19 @@ abstract class AbstractRepository {
         return true;
     }
 
+    public function mettreAJour(AbstractDataObject $objet): void {
+        $setValues = [];
+        $nomColonnes = $this->getNomsColonnes();
+        $tableauTag = array_keys($this->formatTableauSQL($objet));
+        for($i = 0; $i < count($nomColonnes); $i++)
+            $setValues[] = $nomColonnes[$i] . "=:" . $tableauTag[$i];
+
+        $sql = "UPDATE {$this->getNomTable()} SET " . join(",", $setValues) . " WHERE {$this->getClePrimaire()} = :" . $this->getClePrimaire() . "Tag";
+        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
+
+        $pdoStatement->execute($this->formatTableauSQL($objet));
+    }
+
     public function supprimer(string $valeurClePrimaire): bool {
         $sql = "DELETE FROM {$this->getNomTable()} WHERE {$this->getClePrimaire()} = :clePrimaireTag";
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);

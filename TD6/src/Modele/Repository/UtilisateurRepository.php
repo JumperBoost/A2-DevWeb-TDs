@@ -10,18 +10,6 @@ class UtilisateurRepository extends AbstractRepository {
         return new Utilisateur($objetFormatTableau['login'], $objetFormatTableau['nom'], $objetFormatTableau['prenom']);
     }
 
-    public static function mettreAJour(Utilisateur $utilisateur): void {
-        $sql = "UPDATE utilisateur SET nom = :nomTag, prenom = :prenomTag WHERE login = :loginTag";
-        $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare($sql);
-
-        $values = [
-            'loginTag' => $utilisateur->getLogin(),
-            'nomTag' => $utilisateur->getNom(),
-            'prenomTag' => $utilisateur->getPrenom()
-        ];
-        $pdoStatement->execute($values);
-    }
-
     /**
      * @return Trajet[]
      */

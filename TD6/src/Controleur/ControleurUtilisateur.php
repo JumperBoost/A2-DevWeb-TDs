@@ -39,7 +39,7 @@ class ControleurUtilisateur {
 
     public static function mettreAJour() : void {
         $utilisateur = new Utilisateur($_GET['login'], $_GET['nom'], $_GET['prenom']);
-        UtilisateurRepository::mettreAJour($utilisateur);
+        (new UtilisateurRepository())->mettreAJour($utilisateur);
         self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
     }
 

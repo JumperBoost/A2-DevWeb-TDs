@@ -59,3 +59,6 @@
 
 ## Exercice 20
 ✅
+
+## Exercice 21
+✅

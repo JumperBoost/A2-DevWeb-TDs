@@ -24,7 +24,7 @@ class ControleurUtilisateur {
     }
 
     public static function creerDepuisFormulaire() : void {
-        $utilisateur = (new UtilisateurRepository())->construireDepuisTableauSQL($_GET);
+        $utilisateur = self::construireDepuisFormulaire($_GET);
         if((new UtilisateurRepository())->ajouter($utilisateur))
             self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
         else self::afficherErreur("Impossible d'ajouter l'utilisateur.");
@@ -38,7 +38,7 @@ class ControleurUtilisateur {
     }
 
     public static function mettreAJour() : void {
-        $utilisateur = new Utilisateur($_GET['login'], $_GET['nom'], $_GET['prenom']);
+        $utilisateur = self::construireDepuisFormulaire($_GET);
         (new UtilisateurRepository())->mettreAJour($utilisateur);
         self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
     }
@@ -62,5 +62,9 @@ class ControleurUtilisateur {
         extract($parametres);
         $cheminCorpsVue = "utilisateur/$cheminVue";
         require __DIR__ . "/../vue/vueGenerale.php";
+    }
+
+    private static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur {
+        return (new UtilisateurRepository())->construireDepuisTableauSQL($tableauDonneesFormulaire);
     }
 }

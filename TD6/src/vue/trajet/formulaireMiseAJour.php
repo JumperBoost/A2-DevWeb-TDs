@@ -34,14 +34,14 @@
             </p>
             <p>
                 <label for="nonFumeur_id">Non Fumeur ?</label> :
-                <input type="checkbox" placeholder="leblancj" name="nonFumeur" id="nonFumeur_id" <?= $trajet->isNonFumeur() ? "" : "checked" ?>/>
+                <input type="checkbox" placeholder="leblancj" name="nonFumeur" id="nonFumeur_id" <?= $trajet->isNonFumeur() ? "checked" : "" ?>/>
             </p>
             <p>
                 <input type="submit" value="Envoyer" />
             </p>
 
             <input type='hidden' name='controleur' value='trajet'>
-            <input type='hidden' name='action' value='mettreAJourDepuisFormulaire'>
+            <input type='hidden' name='action' value='mettreAJour'>
         </fieldset>
     </form>
 </div>

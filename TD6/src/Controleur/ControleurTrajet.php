@@ -1,6 +1,7 @@
 <?php
 namespace App\Covoiturage\Controleur;
 
+use App\Covoiturage\Modele\DataObject\Trajet;
 use App\Covoiturage\Modele\Repository\TrajetRepository;
 
 class ControleurTrajet {
@@ -22,7 +23,7 @@ class ControleurTrajet {
     }
 
     public static function creerDepuisFormulaire(): void {
-        $trajet = (new TrajetRepository())->construireDepuisTableauSQL($_GET);
+        $trajet = self::construireDepuisFormulaire($_GET);
         if((new TrajetRepository())->ajouter($trajet))
             self::afficherVue("trajetCree.php", ["titre" => "Liste des trajets"]);
         else self::afficherErreur("Impossible d'ajouter le trajet.");
@@ -42,6 +43,12 @@ class ControleurTrajet {
         else self::afficherErreur("Le trajet n'existe pas.");
     }
 
+    public static function mettreAJour(): void {
+        $trajet = self::construireDepuisFormulaire($_GET);
+        (new TrajetRepository())->mettreAJour($trajet);
+        self::afficherVue("trajetMisAJour.php", ["titre" => "Liste des trajets", "id" => $trajet->getId()]);
+    }
+
     public static function afficherErreur(string $messageErreur = "") : void {
         if(empty($messageErreur))
             $messageErreur = "Problème avec le trajet";
@@ -53,5 +60,12 @@ class ControleurTrajet {
         extract($parametres);
         $cheminCorpsVue = "trajet/$cheminVue";
         require __DIR__ . "/../vue/vueGenerale.php";
+    }
+
+    /**
+     * @return Trajet
+     */
+    public static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Trajet {
+        return (new TrajetRepository())->construireDepuisTableauSQL($tableauDonneesFormulaire);
     }
 }

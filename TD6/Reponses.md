@@ -50,3 +50,6 @@
 
 ## Exercice 17
 ✅
+
+## Exercice 18
+✅

@@ -9,7 +9,7 @@ class Trajet extends AbstractDataObject {
     private string $arrivee;
     private DateTime $date;
     private int $prix;
-    private Utilisateur $conducteur;
+    private ?Utilisateur $conducteur;
     private bool $nonFumeur;
 
     /**
@@ -23,7 +23,7 @@ class Trajet extends AbstractDataObject {
         string $arrivee,
         DateTime $date,
         int $prix,
-        Utilisateur $conducteur,
+        ?Utilisateur $conducteur,
         bool $nonFumeur,
         array $passagers = []
     ) {
@@ -77,7 +77,7 @@ class Trajet extends AbstractDataObject {
         $this->prix = $prix;
     }
 
-    public function getConducteur(): Utilisateur {
+    public function getConducteur(): ?Utilisateur {
         return $this->conducteur;
     }
 

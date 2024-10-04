@@ -21,6 +21,13 @@ class ControleurTrajet {
         self::afficherVue("formulaireCreation.php", ["titre" => "Formulaire trajet"]);
     }
 
+    public static function creerDepuisFormulaire(): void {
+        $trajet = (new TrajetRepository())->construireDepuisTableauSQL($_GET);
+        if((new TrajetRepository())->ajouter($trajet))
+            self::afficherVue("trajetCree.php", ["titre" => "Liste des trajets"]);
+        else self::afficherErreur("Impossible d'ajouter le trajet.");
+    }
+
     public static function supprimer(): void {
         $id = $_GET["id"];
         if((new TrajetRepository())->supprimer($id))

@@ -1,5 +1,5 @@
 <div>
-    <form method="POST">
+    <form method="GET">
         <fieldset>
             <legend>Création d'un trajet</legend>
             <p>
@@ -31,7 +31,7 @@
             </p>
 
             <input type='hidden' name='controleur' value='trajet'>
-            <input type='hidden' name='action' value='afficherFormulaireCreation'>
+            <input type='hidden' name='action' value='creerDepuisFormulaire'>
         </fieldset>
     </form>
 </div>

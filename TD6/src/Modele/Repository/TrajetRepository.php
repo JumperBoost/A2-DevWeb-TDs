@@ -60,10 +60,10 @@ class TrajetRepository extends AbstractRepository {
             "idTag" => $trajet->getId(),
             "departTag" => $trajet->getDepart(),
             "arriveeTag" => $trajet->getArrivee(),
-            "dateTag" => $trajet->getDate()->format("y-M-D"),
+            "dateTag" => $trajet->getDate()->format("Y-m-d"),
             "prixTag" => $trajet->getPrix(),
-            "conducteurLoginTag" => $trajet->getConducteur()->getLogin(),
-            "nonFumeurTag" => $trajet->isNonFumeur()
+            "conducteurLoginTag" => !is_null($trajet->getConducteur()) ? $trajet->getConducteur()->getLogin() : null,
+            "nonFumeurTag" => intval($trajet->isNonFumeur())
         );
     }
 }

@@ -3,6 +3,7 @@ namespace App\Covoiturage\Controleur;
 
 use App\Covoiturage\Modele\DataObject\Trajet;
 use App\Covoiturage\Modele\Repository\TrajetRepository;
+use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
 class ControleurTrajet {
     public static function afficherListe() : void {
@@ -14,12 +15,13 @@ class ControleurTrajet {
         $id = $_GET["id"];
         $trajet = (new TrajetRepository())->recupererParClePrimaire($id);
         if(!is_null($trajet))
-            self::afficherVue("detail.php", ["titre" => "Détail d'un trajet", 'trajet' => $trajet]);
+            self::afficherVue("detail.php", ["titre" => "Détail d'un trajet", "trajet" => $trajet, "passagersPotentiel" => (new TrajetRepository())->recupererPassagersOuConducteursPotentiel($trajet)]);
         else self::afficherErreur("Le trajet n'existe pas.");
     }
 
     public static function afficherFormulaireCreation(): void {
-        self::afficherVue("formulaireCreation.php", ["titre" => "Formulaire création trajet"]);
+        $conducteurs = (new UtilisateurRepository())->recuperer();
+        self::afficherVue("formulaireCreation.php", ["titre" => "Formulaire création trajet", "conducteurs" => $conducteurs]);
     }
 
     public static function creerDepuisFormulaire(): void {
@@ -31,9 +33,10 @@ class ControleurTrajet {
 
     public static function afficherFormulaireMiseAJour(): void {
         $trajet = (new TrajetRepository())->recupererParClePrimaire($_GET["id"]);
-        if(!is_null($trajet))
-            self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour trajet", "trajet" => $trajet]);
-        else self::afficherErreur("Impossible de récupérer le trajet.");
+        if(!is_null($trajet)) {
+            $conducteurs = (new TrajetRepository())->recupererPassagersOuConducteursPotentiel($trajet);
+            self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour trajet", "trajet" => $trajet, "conducteurs" => $conducteurs]);
+        } else self::afficherErreur("Impossible de récupérer le trajet.");
     }
 
     public static function supprimer(): void {

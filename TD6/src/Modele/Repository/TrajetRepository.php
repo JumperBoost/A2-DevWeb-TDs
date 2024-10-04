@@ -20,7 +20,7 @@ class TrajetRepository extends AbstractRepository {
 
         // Récupérer la liste des passagers si le trajet existe déjà
         if(!is_null($trajet->getId())) {
-            $trajet->setPassagers(self::recupererPassagers($trajet));
+            $trajet->setPassagers($this->recupererPassagers($trajet));
         }
         return $trajet;
     }
@@ -28,7 +28,7 @@ class TrajetRepository extends AbstractRepository {
     /**
      * @return Utilisateur[]
      */
-    private static function recupererPassagers(Trajet $trajet): array {
+    private function recupererPassagers(Trajet $trajet): array {
         $pdoStatement = ConnexionBaseDeDonnees::getPdo()->prepare("SELECT * FROM passager JOIN utilisateur ON passagerLogin = login WHERE trajetId = :trajetIdTag");
         $pdoStatement->execute(['trajetIdTag' => $trajet->getId()]);
 
@@ -39,12 +39,25 @@ class TrajetRepository extends AbstractRepository {
         return $utilisateurs;
     }
 
+    /**
+     * @param Trajet $trajet
+     * @return Utilisateur[]
+     */
+    public function recupererPassagersOuConducteursPotentiel(Trajet $trajet): array {
+        $passagersPotentiel = (new UtilisateurRepository())->recuperer();
+        $passagersASupprimer = array_merge(array_values($trajet->getPassagers()), [$trajet->getConducteur()]);
+        foreach($passagersASupprimer as $passagerASup)
+            unset($passagersPotentiel[array_keys(array_filter($passagersPotentiel, fn ($p) => $p->getLogin() == $passagerASup->getLogin()))[0]]);
+
+        return $passagersPotentiel;
+    }
+
     protected function getNomTable(): string {
         return "trajet";
     }
 
-    protected function getClePrimaire(): string {
-        return "id";
+    protected function getClesPrimaires(): array {
+        return ["id"];
     }
 
     protected function getNomsColonnes(): array {

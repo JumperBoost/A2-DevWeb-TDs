@@ -48,8 +48,8 @@ class UtilisateurRepository extends AbstractRepository {
         return "utilisateur";
     }
 
-    protected function getClePrimaire(): string {
-        return "login";
+    protected function getClesPrimaires(): array {
+        return ["login"];
     }
 
     protected function getNomsColonnes(): array {

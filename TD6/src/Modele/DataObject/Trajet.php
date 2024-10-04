@@ -93,8 +93,20 @@ class Trajet extends AbstractDataObject {
         $this->nonFumeur = $nonFumeur;
     }
 
+    /**
+     * @return Utilisateur[]
+     */
     public function getPassagers(): array {
         return $this->passagers;
+    }
+
+    public function ajouterPassager(Utilisateur $passager): void {
+        $this->passagers[] = $passager;
+    }
+
+    public function supprimerPassager(Utilisateur $passager): void {
+        $res = array_filter($this->passagers, fn ($p) => $p->getLogin() == $passager->getLogin());
+        unset($this->passagers[array_key_first($res)]);
     }
 
     public function setPassagers(array $passagers): void {

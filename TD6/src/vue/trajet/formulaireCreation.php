@@ -20,7 +20,16 @@
             </p>
             <p>
                 <label for="conducteurLogin_id">Login du conducteur</label> :
-                <input type="text" placeholder="leblancj" name="conducteurLogin" id="conducteurLogin_id" required/>
+                <select id="conducteurLogin_id" name="conducteurLogin" required>
+                    <option value=''>-- Sélectionner un conducteur --</option>
+                    <?php
+                    /**
+                     * @var Utilisateur[] $conducteurs
+                     */
+                    foreach($conducteurs as $conducteur)
+                        echo "<option value='" . htmlspecialchars($conducteur->getLogin()) . "'>" . htmlspecialchars($conducteur->getNom()) . " " . htmlspecialchars($conducteur->getPrenom()) . " (" . htmlspecialchars($conducteur->getLogin()) . ")</option>";
+                    ?>
+                </select>
             </p>
             <p>
                 <label for="nonFumeur_id">Non Fumeur ?</label> :

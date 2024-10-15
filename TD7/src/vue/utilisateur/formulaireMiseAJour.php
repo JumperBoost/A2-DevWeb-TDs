@@ -23,6 +23,7 @@
             <input class="InputAddOn-item" type="submit" value="Envoyer" />
         </p>
 
+        <input type='hidden' name='controleur' value='utilisateur'>
         <input type='hidden' name='action' value='mettreAJour'>
     </fieldset>
 </form>

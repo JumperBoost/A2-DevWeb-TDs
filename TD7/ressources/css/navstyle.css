@@ -9,7 +9,10 @@ nav ul {
 nav ul li {
     border-color: black;
     border-width: 1px;
-    border-style: solid;    
+    border-style: solid;
+    display: flex;
+    align-items: center;
+    height: 40px;
 }
 
 nav ul li:hover {

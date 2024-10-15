@@ -5,7 +5,7 @@ use App\Covoiturage\Modele\DataObject\Trajet;
 use App\Covoiturage\Modele\Repository\TrajetRepository;
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
-class ControleurTrajet {
+class ControleurTrajet extends AbstractControleur {
     public static function afficherListe() : void {
         $trajets = (new TrajetRepository())->recuperer();
         self::afficherVue("liste.php", ["titre" => "Liste des trajets", 'trajets' => $trajets]);
@@ -52,23 +52,14 @@ class ControleurTrajet {
         self::afficherVue("trajetMisAJour.php", ["titre" => "Liste des trajets", "id" => $trajet->getId()]);
     }
 
-    public static function afficherErreur(string $messageErreur = "") : void {
-        if(empty($messageErreur))
-            $messageErreur = "Problème avec le trajet";
-        else $messageErreur = "Problème avec le trajet : $messageErreur";
-        self::afficherVue("erreur.php", ["titre" => "Erreur trajet", "message" => $messageErreur]);
-    }
-
-    private static function afficherVue(string $cheminVue, array $parametres = []) : void {
-        extract($parametres);
-        $cheminCorpsVue = "trajet/$cheminVue";
-        require __DIR__ . "/../vue/vueGenerale.php";
-    }
-
     /**
      * @return Trajet
      */
     public static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Trajet {
         return (new TrajetRepository())->construireDepuisTableauSQL($tableauDonneesFormulaire);
+    }
+
+    protected static function getCheminCorpsVue(): string {
+        return "trajet";
     }
 }

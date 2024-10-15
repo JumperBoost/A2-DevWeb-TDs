@@ -2,10 +2,9 @@
 namespace App\Covoiturage\Controleur;
 
 use App\Covoiturage\Modele\DataObject\Utilisateur;
-use App\Covoiturage\Modele\HTTP\Cookie;
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
-class ControleurUtilisateur {
+class ControleurUtilisateur extends AbstractControleur {
     // Déclaration de type de retour void : la fonction ne retourne pas de valeur
     public static function afficherListe() : void {
         $utilisateurs = (new UtilisateurRepository())->recuperer(); //appel au modèle pour gérer la BD
@@ -52,29 +51,20 @@ class ControleurUtilisateur {
         } else self::afficherErreur("L'utilisateur inséré n'existe pas.");
     }
 
-    public static function deposerCookie(): void {
+    /*public static function deposerCookie(): void {
         Cookie::enregistrer("hello", 123, 10);
         echo "Un cookie a été déposé.";
     }
 
     public static function lireCookie(): void {
         echo "Voici le contenu du cookie : " . Cookie::lire("hello"). ".";
-    }
-
-    public static function afficherErreur(string $messageErreur = "") : void {
-        if(empty($messageErreur))
-            $messageErreur = "Problème avec l'utilisateur";
-        else $messageErreur = "Problème avec l'utilisateur : $messageErreur";
-        self::afficherVue("erreur.php", ["titre" => "Erreur utilisateur", "message" => $messageErreur]);
-    }
-
-    private static function afficherVue(string $cheminVue, array $parametres = []) : void {
-        extract($parametres);
-        $cheminCorpsVue = "utilisateur/$cheminVue";
-        require __DIR__ . "/../vue/vueGenerale.php";
-    }
+    }*/
 
     private static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur {
         return (new UtilisateurRepository())->construireDepuisTableauSQL($tableauDonneesFormulaire);
+    }
+
+    protected static function getCheminCorpsVue(): string {
+        return "utilisateur";
     }
 }

@@ -6,7 +6,7 @@ use App\Covoiturage\Modele\Repository\PassagerRepository;
 use App\Covoiturage\Modele\Repository\TrajetRepository;
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
-class ControleurPassager {
+class ControleurPassager extends AbstractControleur {
     public static function inscrire(): void {
         $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($_GET["login"]);
         $trajet = (new TrajetRepository())->recupererParClePrimaire($_GET["id"]);
@@ -31,16 +31,7 @@ class ControleurPassager {
         } else self::afficherErreur("Impossible de désinscrire le passager");
     }
 
-    public static function afficherErreur(string $messageErreur = "") : void {
-        if(empty($messageErreur))
-            $messageErreur = "Problème avec le passager";
-        else $messageErreur = "Problème avec le passager : $messageErreur";
-        self::afficherVue("erreur.php", ["titre" => "Erreur passager", "message" => $messageErreur]);
-    }
-
-    private static function afficherVue(string $cheminVue, array $parametres = []) : void {
-        extract($parametres);
-        $cheminCorpsVue = "passager/$cheminVue";
-        require __DIR__ . "/../vue/vueGenerale.php";
+    protected static function getCheminCorpsVue(): string {
+        return "passager";
     }
 }

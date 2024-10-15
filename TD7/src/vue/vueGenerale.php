@@ -16,8 +16,12 @@
         <ul>
             <li>
                 <a href="?action=afficherListe&controleur=utilisateur">Gestion des utilisateurs</a>
-            </li><li>
+            </li>
+            <li>
                 <a href="?action=afficherListe&controleur=trajet">Gestion des trajets</a>
+            </li>
+            <li>
+                <a href="?action=afficherFormulairePreference&controleur=generique"><img src="../ressources/img/heart.png" /></a>
             </li>
         </ul>
     </nav>

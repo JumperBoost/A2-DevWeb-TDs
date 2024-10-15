@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../src/Lib/Psr4AutoloaderClass.php';
-use App\Covoiturage\Controleur\ControleurUtilisateur;
+
+use App\Covoiturage\Controleur\AbstractControleur;
+use App\Covoiturage\Lib\PreferenceControleur;
 
 $chargeurDeClasse = new App\Covoiturage\Lib\Psr4AutoloaderClass(false);
 $chargeurDeClasse->register();
@@ -11,15 +13,17 @@ $chargeurDeClasse->addNamespace('App\Covoiturage', __DIR__ . '/../src');
 if(!isset($_GET["action"]))
     $_GET["action"] = "afficherListe";
 if(!isset($_GET["controleur"]))
-    $_GET["controleur"] = "utilisateur";
+    $_GET["controleur"] = PreferenceControleur::existe() ? PreferenceControleur::lire() : "utilisateur";
 
 $action = $_GET["action"];
 $controleur = $_GET["controleur"];
 
-$nomDeClasseControleur = "App\\Covoiturage\\Controleur\\Controleur" . ucfirst($controleur);
-if(class_exists($nomDeClasseControleur)) {
-    $methodes = get_class_methods($nomDeClasseControleur);
-    if (in_array($action, $methodes))
-        $nomDeClasseControleur::$action();
-    else $nomDeClasseControleur::afficherErreur("La méthode $action n'existe pas.");
-} else ControleurUtilisateur::afficherErreur("La classe " . ucfirst($controleur) . " n'existe pas."); // ControleurUtilisateur est temporairement utilisé pour afficher une erreur
+$nomDeClasseControleur = 'App\Covoiturage\Controleur\Controleur'.ucfirst($controleur);
+if(class_exists($nomDeClasseControleur) && in_array($action, get_class_methods($nomDeClasseControleur))) {
+    $nomDeClasseControleur::$action();
+} else {
+    (new class extends AbstractControleur {
+        protected static function getCheminCorpsVue(): string { return '.'; }
+        public function declencherErrreur(string $message): void { static::afficherErreur($message); }
+    })->declencherErrreur("Impossible de trouver la classe Controleur" . ucfirst($controleur) . " ou l'action associée");
+}

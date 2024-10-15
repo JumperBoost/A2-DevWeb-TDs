@@ -2,6 +2,7 @@
 namespace App\Covoiturage\Controleur;
 
 use App\Covoiturage\Modele\DataObject\Utilisateur;
+use App\Covoiturage\Modele\HTTP\Session;
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
 class ControleurUtilisateur extends AbstractControleur {
@@ -59,6 +60,23 @@ class ControleurUtilisateur extends AbstractControleur {
     public static function lireCookie(): void {
         echo "Voici le contenu du cookie : " . Cookie::lire("hello"). ".";
     }*/
+
+    public static function creerSession(): void {
+        Session::getInstance()->enregistrer("key1", "value1");
+        Session::getInstance()->enregistrer("key2", 2);
+        Session::getInstance()->enregistrer("key3", ["subkey_1" => "subvalue_1", "subkey_2" => 2.5]);
+
+        echo "<p>" . Session::getInstance()->lire("key1") . "</p>";
+        echo "<p>" . Session::getInstance()->lire("key2") . "</p>";
+        echo "<p>key2 existe: " . intval(Session::getInstance()->contient("key2")) . "</p>";
+        var_dump(Session::getInstance()->lire("key3"));
+
+        Session::getInstance()->supprimer("key2");
+        echo "<p>key2 existe: " . intval(Session::getInstance()->contient("key2")) . "</p>";
+
+        Session::getInstance()->detruire();
+        echo "<p>" . intval(isset($_SESSION['key1'])) . "</p>";
+    }
 
     private static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur {
         return (new UtilisateurRepository())->construireDepuisTableauSQL($tableauDonneesFormulaire);

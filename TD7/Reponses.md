@@ -32,3 +32,6 @@
 ### Exercice 6
 1. ✅
 2. ✅
+
+### Exercice 7
+✅

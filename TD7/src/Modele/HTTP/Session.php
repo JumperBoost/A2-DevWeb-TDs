@@ -1,6 +1,7 @@
 <?php
 namespace App\Covoiturage\Modele\HTTP;
 
+use App\Covoiturage\Configuration\ConfigurationSite;
 use Exception;
 
 class Session {
@@ -10,14 +11,15 @@ class Session {
      * @throws Exception
      */
     private function __construct() {
-        if(session_start() === false) {
+        if(session_start() === false)
             throw new Exception("La session n'a pas réussi à démarrer.");
-        }
     }
 
     public static function getInstance(): Session {
-        if(is_null(Session::$instance))
+        if(is_null(Session::$instance) || self::$instance->verifierDerniereActivite()) {
             Session::$instance = new Session();
+            $_SESSION['derniereActivite'] = time();
+        }
         return Session::$instance;
     }
 
@@ -43,5 +45,15 @@ class Session {
         Cookie::supprimer(session_name()); // deletes the session cookie
         // Il faudra reconstruire la session au prochain appel de getInstance()
         Session::$instance = null;
+    }
+
+    public function verifierDerniereActivite(): bool {
+        if (isset($_SESSION['derniereActivite'])) {
+            if(time() - $_SESSION['derniereActivite'] > ConfigurationSite::getDureeExpirationSession()) {
+                $this->detruire();
+                return true;
+            } else $_SESSION['derniereActivite'] = time();
+        }
+        return false;
     }
 }

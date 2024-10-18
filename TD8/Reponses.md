@@ -17,3 +17,12 @@
 
 ### Exercice 6
 ✅
+
+### Exercice 7
+✅
+
+### Exercice 8
+✅
+
+### Exercice 9
+✅

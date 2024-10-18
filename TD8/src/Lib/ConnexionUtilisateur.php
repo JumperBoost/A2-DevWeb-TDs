@@ -24,4 +24,8 @@ class ConnexionUtilisateur {
     public static function getLoginUtilisateurConnecte(): ?string {
         return self::estConnecte() ? Session::getInstance()->lire(self::$cleConnexion) : null;
     }
+
+    public static function estUtilisateur(string $login): bool {
+        return self::estConnecte() && self::getLoginUtilisateurConnecte() == $login;
+    }
 }

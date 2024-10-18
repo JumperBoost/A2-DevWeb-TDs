@@ -40,29 +40,49 @@ class ControleurUtilisateur extends AbstractControleur {
     }
 
     public static function supprimer() : void {
-        $login = $_GET["login"];
-        if((new UtilisateurRepository())->supprimer($login))
-            self::afficherVue("utilisateurSupprime.php", ["titre" => "Liste des utilisateurs", "login" => $login]);
-        else self::afficherErreur("Impossible de supprimer l'utilisateur.");
+        $login = $_GET["login"] ?? null;
+        if(!is_null($login)) {
+            if(!is_null((new UtilisateurRepository())->recupererParClePrimaire($login))) {
+                if(ConnexionUtilisateur::estUtilisateur($login)) {
+                    if((new UtilisateurRepository())->supprimer($login)) {
+                        ConnexionUtilisateur::deconnecter();
+                        self::afficherVue("utilisateurSupprime.php", ["titre" => "Liste des utilisateurs", "login" => $login]);
+                    }
+                    else self::afficherErreur("Impossible de supprimer l'utilisateur.");
+                } else self::afficherErreur("Vous ne pouvez modifier que votre compte.");
+            } else self::afficherErreur("L'utilisateur référencé est incorrect.");
+        } else self::afficherErreur("Le champ de l'identifiant est manquant.");
     }
 
     public static function mettreAJour() : void {
-        $mdpInput1 = $_GET['mdpHache'];
-        $mdpInput2 = $_GET['mdpHache2'];
-        // TODO: Vérification de l'ancien mot de passe depuis la bdd à implémenter
-        if($mdpInput1 == $mdpInput2) {
-            $utilisateur = self::construireDepuisFormulaire($_GET);
-            (new UtilisateurRepository())->mettreAJour($utilisateur);
-            self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
-        } else self::afficherErreur("Mots de passe distincts");
+        $login = $_GET['login'] ?? null;
+        $mdpInput1 = $_GET['mdpHache'] ?? null;
+        $mdpInput2 = $_GET['mdpHache2'] ?? null;
+        $ancienMdp = $_GET['oldMdpHache'] ?? null;
+        if(!is_null($login) && isset($_GET['nom']) && isset($_GET['prenom']) && !is_null($ancienMdp)
+            && !is_null($mdpInput1) && !is_null($mdpInput2)) {
+            if(!is_null((new UtilisateurRepository())->recupererParClePrimaire($login))) {
+                if(ConnexionUtilisateur::estUtilisateur($login)) {
+                    $utilisateur = self::construireDepuisFormulaire($_GET);
+                    if(MotDePasse::verifier($ancienMdp, $utilisateur->getMdpHache())) {
+                        if($mdpInput1 == $mdpInput2) {
+                            (new UtilisateurRepository())->mettreAJour($utilisateur);
+                            self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
+                        } else self::afficherErreur("Mots de passe distincts");
+                    } else self::afficherErreur("L'ancien mot de passe indiqué est incorrect.");
+                } else self::afficherErreur("Vous ne pouvez modifier que votre compte.");
+            } else self::afficherErreur("L'utilisateur référencé est incorrect.");
+        } else self::afficherErreur("Un ou plusieurs champs sont manquants.");
     }
 
     public static function afficherFormulaireMiseAJour() : void {
         $login = $_GET["login"];
-        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
-        if(!is_null($utilisateur)) {
-            self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour utilisateur", "utilisateur" => $utilisateur]);
-        } else self::afficherErreur("L'utilisateur inséré n'existe pas.");
+        if(!is_null($login) && ConnexionUtilisateur::estUtilisateur($login)) {
+            $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+            if(!is_null($utilisateur)) {
+                self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour utilisateur", "utilisateur" => $utilisateur]);
+            } else self::afficherErreur("L'utilisateur inséré n'existe pas.");
+        } else self::afficherErreur("La mise à jour n'est possible que pour l'utilisateur connecté.");
     }
 
     public static function afficherFormulaireConnexion(): void {

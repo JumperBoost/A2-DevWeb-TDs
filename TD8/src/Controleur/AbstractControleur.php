@@ -1,6 +1,8 @@
 <?php
 namespace App\Covoiturage\Controleur;
 
+use App\Covoiturage\Lib\ConnexionUtilisateur;
+
 abstract class AbstractControleur {
     protected static abstract function getCheminCorpsVue(): string;
 
@@ -14,6 +16,7 @@ abstract class AbstractControleur {
     protected static function afficherVue(string $cheminVue, array $parametres = []) : void {
         extract($parametres);
         $cheminCorpsVue = static::getCheminCorpsVue() . "/$cheminVue";
+        $_estConnecte = ConnexionUtilisateur::estConnecte();
         require __DIR__ . "/../vue/vueGenerale.php";
     }
 }

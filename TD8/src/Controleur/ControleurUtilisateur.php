@@ -1,6 +1,7 @@
 <?php
 namespace App\Covoiturage\Controleur;
 
+use App\Covoiturage\Lib\ConnexionUtilisateur;
 use App\Covoiturage\Lib\MotDePasse;
 use App\Covoiturage\Modele\DataObject\Utilisateur;
 use App\Covoiturage\Modele\HTTP\Session;
@@ -14,11 +15,13 @@ class ControleurUtilisateur extends AbstractControleur {
     }
 
     public static function afficherDetail() : void {
-        $login = $_GET["login"];
-        $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
-        if(!is_null($utilisateur))
-            self::afficherVue("detail.php", ["titre" => "Détail d'un utilisateur", 'utilisateur' => $utilisateur]);
-        else self::afficherErreur("L'utilisateur n'existe pas.");
+        $login = $_GET["login"] ?? ConnexionUtilisateur::getLoginUtilisateurConnecte();
+        if(!is_null($login)) {
+            $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+            if(!is_null($utilisateur))
+                self::afficherVue("detail.php", ["titre" => "Détail d'un utilisateur", 'utilisateur' => $utilisateur]);
+            else self::afficherErreur("L'utilisateur n'existe pas.");
+        } else self::afficherErreur("Impossible de récupérer le login.");
     }
 
     public static function afficherFormulaireCreation() : void {
@@ -62,6 +65,10 @@ class ControleurUtilisateur extends AbstractControleur {
         } else self::afficherErreur("L'utilisateur inséré n'existe pas.");
     }
 
+    public static function afficherFormulaireConnexion(): void {
+        self::afficherVue("formulaireConnexion.php", ["titre" => "Formulaire de connexion"]);
+    }
+
     /*public static function deposerCookie(): void {
         Cookie::enregistrer("hello", 123, 10);
         echo "Un cookie a été déposé.";
@@ -86,6 +93,27 @@ class ControleurUtilisateur extends AbstractControleur {
 
         Session::getInstance()->detruire();
         echo "<p>" . intval(isset($_SESSION['key1'])) . "</p>";
+    }
+
+    public static function connecter(): void {
+        $login = $_GET['login'] ?? null;
+        $mdp = $_GET['mdp'] ?? null;
+        if(!is_null($login) && !is_null($mdp)) {
+            /** @var Utilisateur $utilisateur */
+            $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
+            if(!is_null($utilisateur) && MotDePasse::verifier($mdp, $utilisateur->getMdpHache())) {
+                ConnexionUtilisateur::connecter($login);
+                self::afficherVue("utilisateurConnecte.php", ["titre" => "Liste des utilisateurs", "utilisateur" => $utilisateur]);
+            } else self::afficherErreur("Login et/ou mot de passe incorrect.");
+        } else self::afficherErreur("Login et/ou mot de passe manquant.");
+    }
+
+    public static function deconnecter(): void {
+        if(ConnexionUtilisateur::estConnecte()) {
+            ConnexionUtilisateur::deconnecter();
+            $utilisateurs = (new UtilisateurRepository())->recuperer();
+            self::afficherVue("utilisateurDeconnecte.php", ["titre" => "Liste des utilisateurs", "utilisateurs" => $utilisateurs]);
+        } else self::afficherErreur("Impossible de vous deconnecter : vous n'êtes pas connecté.");
     }
 
     private static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur {

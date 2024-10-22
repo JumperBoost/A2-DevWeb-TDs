@@ -7,7 +7,7 @@ use App\Covoiturage\Modele\DataObject\Utilisateur;
 
 class UtilisateurRepository extends AbstractRepository {
     public function construireDepuisTableauSQL(array $objetFormatTableau): Utilisateur {
-        return new Utilisateur($objetFormatTableau['login'], $objetFormatTableau['nom'], $objetFormatTableau['prenom'], $objetFormatTableau['mdpHache']);
+        return new Utilisateur($objetFormatTableau['login'], $objetFormatTableau['nom'], $objetFormatTableau['prenom'], $objetFormatTableau['mdpHache'], $objetFormatTableau['estAdmin']);
     }
 
     /**
@@ -53,20 +53,21 @@ class UtilisateurRepository extends AbstractRepository {
     }
 
     protected function getNomsColonnes(): array {
-        return ["login", "nom", "prenom", "mdpHache"];
+        return ["login", "nom", "prenom", "mdpHache", "estAdmin"];
     }
 
     /**
-     * @param Utilisateur $utilisateur
+     * @param Utilisateur $objet
      * @return array
      */
-    protected function formatTableauSQL(AbstractDataObject $utilisateur): array
+    protected function formatTableauSQL(AbstractDataObject $objet): array
     {
         return array(
-            "loginTag" => $utilisateur->getLogin(),
-            "nomTag" => $utilisateur->getNom(),
-            "prenomTag" => $utilisateur->getPrenom(),
-            "mdpHacheTag" => $utilisateur->getMdpHache()
+            "loginTag" => $objet->getLogin(),
+            "nomTag" => $objet->getNom(),
+            "prenomTag" => $objet->getPrenom(),
+            "mdpHacheTag" => $objet->getMdpHache(),
+            "estAdminTag" => intval($objet->isAdmin())
         );
     }
 }

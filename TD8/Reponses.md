@@ -26,3 +26,18 @@
 
 ### Exercice 9
 ✅
+
+### Exercice 10
+✅
+
+### Exercice 11
+✅
+
+### Exercice 12
+✅
+
+### Exercice 13
+✅
+
+### Exercice 14
+✅

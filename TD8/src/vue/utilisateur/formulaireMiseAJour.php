@@ -19,6 +19,13 @@
             <label class="InputAddOn-item" for="prenom_id">Prénom</label>
             <input class="InputAddOn-field" type="text" placeholder="Juste" name="prenom" id="prenom_id" value="<?= htmlspecialchars($utilisateur->getPrenom()) ?>" required/>
         </p>
+        <?php use App\Covoiturage\Lib\ConnexionUtilisateur;
+        if(ConnexionUtilisateur::estAdministrateur()) {?>
+            <p class="InputAddOn">
+                <label class="InputAddOn-item" for="estAdmin_id">Administrateur</label>
+                <input class="InputAddOn-field" type="checkbox" placeholder="" name="estAdmin" id="estAdmin_id" <?= $utilisateur->isAdmin() ? "checked" : "" ?>>
+            </p>
+        <?php }?>
         <p class="InputAddOn">
             <label class="InputAddOn-item" for="oldMdp_id">Ancien mot de passe&#42;</label>
             <input class="InputAddOn-field" type="password" value="" placeholder="" name="oldMdpHache" id="oldMdp_id" required>

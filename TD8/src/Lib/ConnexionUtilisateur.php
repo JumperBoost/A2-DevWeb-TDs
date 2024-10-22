@@ -1,7 +1,9 @@
 <?php
 namespace App\Covoiturage\Lib;
 
+use App\Covoiturage\Modele\DataObject\Utilisateur;
 use App\Covoiturage\Modele\HTTP\Session;
+use App\Covoiturage\Modele\Repository\UtilisateurRepository;
 
 class ConnexionUtilisateur {
     // L'utilisateur connecté sera enregistré en session associé à la clé suivante
@@ -14,6 +16,15 @@ class ConnexionUtilisateur {
 
     public static function estConnecte(): bool {
         return Session::getInstance()->contient(self::$cleConnexion);
+    }
+
+    public static function estAdministrateur() : bool {
+        /** @var Utilisateur $utilisateur */
+        if(self::estConnecte()) {
+            $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire(self::getLoginUtilisateurConnecte());
+            return $utilisateur->isAdmin();
+        }
+        return false;
     }
 
     public static function deconnecter(): void {

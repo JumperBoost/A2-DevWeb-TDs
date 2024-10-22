@@ -11,7 +11,8 @@ class ControleurUtilisateur extends AbstractControleur {
     // Déclaration de type de retour void : la fonction ne retourne pas de valeur
     public static function afficherListe() : void {
         $utilisateurs = (new UtilisateurRepository())->recuperer(); //appel au modèle pour gérer la BD
-        self::afficherVue("liste.php", ["titre" => "Liste des utilisateurs", 'utilisateurs' => $utilisateurs]);  //"redirige" vers la vue
+        $estAdmin = ConnexionUtilisateur::estAdministrateur();
+        self::afficherVue("liste.php", ["titre" => "Liste des utilisateurs", 'utilisateurs' => $utilisateurs, "estAdmin" => $estAdmin]);  //"redirige" vers la vue
     }
 
     public static function afficherDetail() : void {
@@ -61,27 +62,29 @@ class ControleurUtilisateur extends AbstractControleur {
         $ancienMdp = $_GET['oldMdpHache'] ?? null;
         if(!is_null($login) && isset($_GET['nom']) && isset($_GET['prenom']) && !is_null($ancienMdp)
             && !is_null($mdpInput1) && !is_null($mdpInput2)) {
-            if(!is_null((new UtilisateurRepository())->recupererParClePrimaire($login))) {
-                if(ConnexionUtilisateur::estUtilisateur($login)) {
-                    $utilisateur = self::construireDepuisFormulaire($_GET);
-                    if(MotDePasse::verifier($ancienMdp, $utilisateur->getMdpHache())) {
-                        if($mdpInput1 == $mdpInput2) {
-                            (new UtilisateurRepository())->mettreAJour($utilisateur);
-                            self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
-                        } else self::afficherErreur("Mots de passe distincts");
-                    } else self::afficherErreur("L'ancien mot de passe indiqué est incorrect.");
-                } else self::afficherErreur("Vous ne pouvez modifier que votre compte.");
-            } else self::afficherErreur("L'utilisateur référencé est incorrect.");
+            if(ConnexionUtilisateur::estUtilisateur($login) || ConnexionUtilisateur::estAdministrateur()) {
+                if(!is_null((new UtilisateurRepository())->recupererParClePrimaire($login))) {
+                    if(ConnexionUtilisateur::estUtilisateur($login)) {
+                        $utilisateur = self::construireDepuisFormulaire($_GET);
+                        if(ConnexionUtilisateur::estAdministrateur() || MotDePasse::verifier($ancienMdp, $utilisateur->getMdpHache())) {
+                            if($mdpInput1 == $mdpInput2) {
+                                (new UtilisateurRepository())->mettreAJour($utilisateur);
+                                self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
+                            } else self::afficherErreur("Mots de passe distincts");
+                        } else self::afficherErreur("L'ancien mot de passe indiqué est incorrect.");
+                    } else self::afficherErreur("Vous ne pouvez modifier que votre compte.");
+                } else self::afficherErreur("Login inconnu.");
+            }
         } else self::afficherErreur("Un ou plusieurs champs sont manquants.");
     }
 
     public static function afficherFormulaireMiseAJour() : void {
         $login = $_GET["login"];
-        if(!is_null($login) && ConnexionUtilisateur::estUtilisateur($login)) {
+        if(!is_null($login) && (ConnexionUtilisateur::estUtilisateur($login) || ConnexionUtilisateur::estAdministrateur())) {
             $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             if(!is_null($utilisateur)) {
                 self::afficherVue("formulaireMiseAJour.php", ["titre" => "Formulaire mise à jour utilisateur", "utilisateur" => $utilisateur]);
-            } else self::afficherErreur("L'utilisateur inséré n'existe pas.");
+            } else self::afficherErreur("Login inconnu.");
         } else self::afficherErreur("La mise à jour n'est possible que pour l'utilisateur connecté.");
     }
 
@@ -132,12 +135,14 @@ class ControleurUtilisateur extends AbstractControleur {
         if(ConnexionUtilisateur::estConnecte()) {
             ConnexionUtilisateur::deconnecter();
             $utilisateurs = (new UtilisateurRepository())->recuperer();
-            self::afficherVue("utilisateurDeconnecte.php", ["titre" => "Liste des utilisateurs", "utilisateurs" => $utilisateurs]);
+            $estAdmin = ConnexionUtilisateur::estAdministrateur();
+            self::afficherVue("utilisateurDeconnecte.php", ["titre" => "Liste des utilisateurs", "utilisateurs" => $utilisateurs, "estAdmin" => $estAdmin]);
         } else self::afficherErreur("Impossible de vous deconnecter : vous n'êtes pas connecté.");
     }
 
     private static function construireDepuisFormulaire(array $tableauDonneesFormulaire): Utilisateur {
         $tableauDonneesFormulaire['mdpHache'] = MotDePasse::hacher($tableauDonneesFormulaire['mdpHache']);
+        $tableauDonneesFormulaire['estAdmin'] = ConnexionUtilisateur::estAdministrateur() && isset($tableauDonneesFormulaire['estAdmin']);
         return (new UtilisateurRepository())->construireDepuisTableauSQL($tableauDonneesFormulaire);
     }
 

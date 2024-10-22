@@ -8,6 +8,7 @@ class Utilisateur extends AbstractDataObject {
     private string $nom;
     private string $prenom;
     private string $mdpHache;
+    private bool $estAdmin;
 
     /**
      * @var ?Trajet[]
@@ -58,12 +59,14 @@ class Utilisateur extends AbstractDataObject {
         string $login,
         string $nom,
         string $prenom,
-        string $mdpHache
+        string $mdpHache,
+        bool $estAdmin = false
     ) {
         $this->login = $login;
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->mdpHache = $mdpHache;
+        $this->estAdmin = $estAdmin;
     }
 
     public function getTrajetsCommePassager(): ?array {
@@ -84,6 +87,14 @@ class Utilisateur extends AbstractDataObject {
 
     public function setTrajetsCommeConducteur(?array $trajetsCommeConducteur): void {
         $this->trajetsCommeConducteur = $trajetsCommeConducteur;
+    }
+
+    public function isAdmin(): bool {
+        return $this->estAdmin;
+    }
+
+    public function setEstAdmin(bool $estAdmin): void {
+        $this->estAdmin = $estAdmin;
     }
 
     // Pour pouvoir convertir un objet en chaîne de caractères

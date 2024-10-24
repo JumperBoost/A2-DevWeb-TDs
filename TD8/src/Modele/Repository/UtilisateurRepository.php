@@ -7,7 +7,7 @@ use App\Covoiturage\Modele\DataObject\Utilisateur;
 
 class UtilisateurRepository extends AbstractRepository {
     public function construireDepuisTableauSQL(array $objetFormatTableau): Utilisateur {
-        return new Utilisateur($objetFormatTableau['login'], $objetFormatTableau['nom'], $objetFormatTableau['prenom'], $objetFormatTableau['mdpHache'], $objetFormatTableau['estAdmin']);
+        return new Utilisateur($objetFormatTableau['login'], $objetFormatTableau['nom'], $objetFormatTableau['prenom'], $objetFormatTableau['mdpHache'], $objetFormatTableau['email'] ?? "", $objetFormatTableau['emailAValider'] ?? "", $objetFormatTableau['nonce'] ?? "", $objetFormatTableau['estAdmin']);
     }
 
     /**
@@ -53,7 +53,7 @@ class UtilisateurRepository extends AbstractRepository {
     }
 
     protected function getNomsColonnes(): array {
-        return ["login", "nom", "prenom", "mdpHache", "estAdmin"];
+        return ["login", "nom", "prenom", "mdpHache", "estAdmin", "email", "emailAValider", "nonce"];
     }
 
     /**
@@ -67,7 +67,10 @@ class UtilisateurRepository extends AbstractRepository {
             "nomTag" => $objet->getNom(),
             "prenomTag" => $objet->getPrenom(),
             "mdpHacheTag" => $objet->getMdpHache(),
-            "estAdminTag" => intval($objet->isAdmin())
+            "estAdminTag" => intval($objet->isAdmin()),
+            "emailTag" => $objet->getEmail(),
+            "emailAValiderTag" => $objet->getEmailAValider(),
+            "nonceTag" => $objet->getNonce()
         );
     }
 }

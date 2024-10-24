@@ -19,6 +19,10 @@
             <label class="InputAddOn-item" for="prenom_id">Prénom</label>
             <input class="InputAddOn-field" type="text" placeholder="Juste" name="prenom" id="prenom_id" value="<?= htmlspecialchars($utilisateur->getPrenom()) ?>" required/>
         </p>
+        <p class="InputAddOn">
+            <label class="InputAddOn-item" for="email_id">Email&#42;</label>
+            <input class="InputAddOn-field" type="email" value="<?= $utilisateur->getEmail() ?>" placeholder="toto@yopmail.com" name="email" id="email_id" required>
+        </p>
         <?php use App\Covoiturage\Lib\ConnexionUtilisateur;
         if(ConnexionUtilisateur::estAdministrateur()) {?>
             <p class="InputAddOn">

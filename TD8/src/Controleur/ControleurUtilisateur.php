@@ -3,6 +3,7 @@ namespace App\Covoiturage\Controleur;
 
 use App\Covoiturage\Lib\ConnexionUtilisateur;
 use App\Covoiturage\Lib\MotDePasse;
+use App\Covoiturage\Lib\VerificationEmail;
 use App\Covoiturage\Modele\DataObject\Utilisateur;
 use App\Covoiturage\Modele\HTTP\Session;
 use App\Covoiturage\Modele\Repository\UtilisateurRepository;
@@ -33,10 +34,16 @@ class ControleurUtilisateur extends AbstractControleur {
         $mdpInput1 = $_GET['mdpHache'];
         $mdpInput2 = $_GET['mdpHache2'];
         if($mdpInput1 == $mdpInput2) {
-            $utilisateur = self::construireDepuisFormulaire($_GET);
-            if((new UtilisateurRepository())->ajouter($utilisateur))
-                self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
-            else self::afficherErreur("Impossible d'ajouter l'utilisateur.");
+            $_GET['emailAValider'] = $_GET['email'];
+            $_GET['email'] = "";
+            if(filter_var($_GET['emailAValider'], FILTER_VALIDATE_EMAIL)) {
+                $_GET['nonce'] = MotDePasse::genererChaineAleatoire();
+                $utilisateur = self::construireDepuisFormulaire($_GET);
+                if((new UtilisateurRepository())->ajouter($utilisateur)) {
+                    self::afficherVue("utilisateurCree.php", ["titre" => "Liste des utilisateurs"]);
+                    VerificationEmail::envoiEmailValidation($utilisateur);
+                } else self::afficherErreur("Impossible d'ajouter l'utilisateur.");
+            } else self::afficherErreur("L'email indiqué n'est pas une adresse mail valide.");
         } else self::afficherErreur("Mots de passe distincts");
     }
 
@@ -60,14 +67,25 @@ class ControleurUtilisateur extends AbstractControleur {
         $mdpInput1 = $_GET['mdpHache'] ?? null;
         $mdpInput2 = $_GET['mdpHache2'] ?? null;
         $ancienMdp = $_GET['oldMdpHache'] ?? null;
+        $email = $_GET['email'] ?? null;
         if(!is_null($login) && isset($_GET['nom']) && isset($_GET['prenom']) && !is_null($ancienMdp)
-            && !is_null($mdpInput1) && !is_null($mdpInput2)) {
+            && !is_null($mdpInput1) && !is_null($mdpInput2) && !is_null($email)) {
             if(ConnexionUtilisateur::estUtilisateur($login) || ConnexionUtilisateur::estAdministrateur()) {
                 if(!is_null((new UtilisateurRepository())->recupererParClePrimaire($login))) {
                     if(ConnexionUtilisateur::estUtilisateur($login)) {
                         $utilisateur = self::construireDepuisFormulaire($_GET);
                         if(ConnexionUtilisateur::estAdministrateur() || MotDePasse::verifier($ancienMdp, $utilisateur->getMdpHache())) {
                             if($mdpInput1 == $mdpInput2) {
+                                /** @var Utilisateur $utilisateurBDD */
+                                $utilisateurBDD = (new UtilisateurRepository())->recupererParClePrimaire($login);
+                                if($utilisateurBDD->getEmail() != $utilisateur->getEmail()) {
+                                    if(filter_var($utilisateur->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                                        $utilisateur->setEmailAValider($utilisateur->getEmail());
+                                        $utilisateur->setEmail($utilisateurBDD->getEmail());
+                                        $utilisateur->setNonce(MotDePasse::genererChaineAleatoire());
+                                        VerificationEmail::envoiEmailValidation($utilisateur);
+                                    } else self::afficherErreur("L'email indiqué n'est pas une adresse mail valide.");
+                                }
                                 (new UtilisateurRepository())->mettreAJour($utilisateur);
                                 self::afficherVue("utilisateurMisAJour.php", ["titre" => "Liste des utilisateurs", "login" => $utilisateur->getLogin()]);
                             } else self::afficherErreur("Mots de passe distincts");
@@ -90,6 +108,17 @@ class ControleurUtilisateur extends AbstractControleur {
 
     public static function afficherFormulaireConnexion(): void {
         self::afficherVue("formulaireConnexion.php", ["titre" => "Formulaire de connexion"]);
+    }
+
+    public static function validerEmail(): void {
+        $login = $_GET['login'] ?? null;
+        $nonce= $_GET['nonce'] ?? null;
+        if(!is_null($login) && !is_null($nonce)) {
+            if(VerificationEmail::traiterEmailValidation($login, $nonce)) {
+                ConnexionUtilisateur::connecter($login);
+                self::afficherDetail();
+            } else self::afficherErreur("Le login et/ou le nonce est incorrect.");
+        } else self::afficherErreur("Le login et/ou le nonce est manquant.");
     }
 
     /*public static function deposerCookie(): void {
@@ -125,8 +154,10 @@ class ControleurUtilisateur extends AbstractControleur {
             /** @var Utilisateur $utilisateur */
             $utilisateur = (new UtilisateurRepository())->recupererParClePrimaire($login);
             if(!is_null($utilisateur) && MotDePasse::verifier($mdp, $utilisateur->getMdpHache())) {
-                ConnexionUtilisateur::connecter($login);
-                self::afficherVue("utilisateurConnecte.php", ["titre" => "Liste des utilisateurs", "utilisateur" => $utilisateur]);
+                if(VerificationEmail::aValideEmail($utilisateur)) {
+                    ConnexionUtilisateur::connecter($login);
+                    self::afficherVue("utilisateurConnecte.php", ["titre" => "Liste des utilisateurs", "utilisateur" => $utilisateur]);
+                } else self::afficherErreur("L'adresse mail de l'utilisateur n'a pas encore été vérifié.");
             } else self::afficherErreur("Login et/ou mot de passe incorrect.");
         } else self::afficherErreur("Login et/ou mot de passe manquant.");
     }

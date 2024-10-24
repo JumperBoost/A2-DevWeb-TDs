@@ -8,6 +8,9 @@ class Utilisateur extends AbstractDataObject {
     private string $nom;
     private string $prenom;
     private string $mdpHache;
+    private string $email;
+    private string $emailAValider;
+    private string $nonce;
     private bool $estAdmin;
 
     /**
@@ -60,12 +63,18 @@ class Utilisateur extends AbstractDataObject {
         string $nom,
         string $prenom,
         string $mdpHache,
+        string $email,
+        string $emailAValider,
+        string $nonce,
         bool $estAdmin = false
     ) {
         $this->login = $login;
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->mdpHache = $mdpHache;
+        $this->email = $email;
+        $this->emailAValider = $emailAValider;
+        $this->nonce = $nonce;
         $this->estAdmin = $estAdmin;
     }
 
@@ -87,6 +96,30 @@ class Utilisateur extends AbstractDataObject {
 
     public function setTrajetsCommeConducteur(?array $trajetsCommeConducteur): void {
         $this->trajetsCommeConducteur = $trajetsCommeConducteur;
+    }
+
+    public function getEmail(): string {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): void {
+        $this->email = $email;
+    }
+
+    public function getEmailAValider(): string {
+        return $this->emailAValider;
+    }
+
+    public function setEmailAValider(string $emailAValider): void {
+        $this->emailAValider = $emailAValider;
+    }
+
+    public function getNonce(): string {
+        return $this->nonce;
+    }
+
+    public function setNonce(string $nonce): void {
+        $this->nonce = $nonce;
     }
 
     public function isAdmin(): bool {
